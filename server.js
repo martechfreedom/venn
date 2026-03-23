@@ -10,6 +10,7 @@ const bigquery = new BigQuery();
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use('/build', express.static('build'));
 app.use(express.static('public'));
 
 // Porta do Cloud Run (variável de ambiente)
