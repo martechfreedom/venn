@@ -4,44 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerador de Venn Diagram</title>
-    
     <!-- Favicon (logo na aba do navegador) -->
     <link rel="icon" type="image/png" href="https://i.imgur.com/6gGwuFn.png">
     <link rel="shortcut icon" type="image/png" href="https://i.imgur.com/6gGwuFn.png">
     <link rel="apple-touch-icon" href="https://i.imgur.com/6gGwuFn.png">
-    
     <!-- Meta tags -->
     <meta name="description" content="Gerador de Venn Diagram - Crie diagramas personalizados">
     <meta name="theme-color" content="#fc4707">
-    
     <!-- Bibliotecas -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/venn.js@0.2.20/build/venn.min.js"></script>
-    
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #000000;
             min-height: 100vh;
             padding: 20px;
         }
-        
         .container {
             max-width: 1400px;
             margin: 0 auto;
         }
-        
         .header {
             text-align: center;
             margin-bottom: 30px;
         }
-        
         .header-top {
             display: flex;
             justify-content: center;
@@ -49,32 +41,27 @@
             gap: 20px;
             margin-bottom: 15px;
         }
-        
         .logo {
             height: 50px;
             width: auto;
             object-fit: contain;
         }
-        
         .header h1 {
             font-size: 2.5em;
             color: #ffffff;
             margin: 0;
             font-weight: 700;
         }
-        
         .header p {
             font-size: 1.1em;
             color: #dddddd;
             margin-top: 10px;
         }
-        
         .content {
             display: grid;
             grid-template-columns: 450px 1fr;
             gap: 20px;
         }
-        
         @media (max-width: 1024px) {
             .content {
                 grid-template-columns: 1fr;
@@ -89,7 +76,6 @@
                 font-size: 1em;
             }
         }
-        
         .panel {
             background: #1a1a1a;
             border-radius: 16px;
@@ -97,11 +83,9 @@
             box-shadow: 0 20px 60px rgba(252, 71, 7, 0.3);
             border: 2px solid #fc4707;
         }
-        
         .form-group {
             margin-bottom: 20px;
         }
-        
         label {
             display: block;
             color: #dddddd;
@@ -109,7 +93,6 @@
             margin-bottom: 8px;
             font-size: 14px;
         }
-        
         input[type="text"],
         input[type="number"] {
             width: 100%;
@@ -121,17 +104,14 @@
             background: #2a2a2a;
             color: #dddddd;
         }
-        
         input:focus {
             outline: none;
             border-color: #fc4707;
             box-shadow: 0 0 0 3px rgba(252, 71, 7, 0.2);
         }
-        
         input::placeholder {
             color: #666;
         }
-        
         .conjunto-card {
             background: #2a2a2a;
             padding: 20px;
@@ -139,7 +119,6 @@
             margin-bottom: 15px;
             border-left: 4px solid #fc4707;
         }
-        
         button {
             width: 100%;
             background: #fc4707;
@@ -154,27 +133,22 @@
             box-shadow: 0 4px 15px rgba(252, 71, 7, 0.4);
             margin-top: 10px;
         }
-        
         button:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(252, 71, 7, 0.6);
             background: #dd3f06;
         }
-        
         button:active {
             transform: translateY(0);
         }
-        
         .btn-secondary {
             background: #666;
             box-shadow: 0 4px 15px rgba(102, 102, 102, 0.4);
         }
-        
         .btn-secondary:hover {
             box-shadow: 0 6px 20px rgba(102, 102, 102, 0.6);
             background: #555;
         }
-        
         #venn-container {
             min-height: 600px;
             display: flex;
@@ -183,24 +157,20 @@
             background: #0a0a0a;
             border-radius: 12px;
         }
-        
         #venn {
             width: 100%;
         }
-        
         .placeholder {
             text-align: center;
             color: #666;
             padding: 100px 20px;
         }
-        
         .placeholder svg {
             width: 200px;
             height: 200px;
             opacity: 0.3;
             margin-bottom: 20px;
         }
-        
         .info-box {
             background: rgba(252, 71, 7, 0.1);
             border-left: 4px solid #fc4707;
@@ -210,19 +180,16 @@
             font-size: 13px;
             color: #dddddd;
         }
-        
         .info-box strong {
             display: block;
             margin-bottom: 5px;
             color: #fc4707;
         }
-        
         .color-picker {
             display: flex;
             gap: 10px;
             align-items: center;
         }
-        
         input[type="color"] {
             width: 50px;
             height: 40px;
@@ -231,11 +198,53 @@
             cursor: pointer;
             background: #2a2a2a;
         }
-        
         .color-picker span {
             color: #dddddd;
         }
-        
+        /* SLIDER DE TRANSPARÊNCIA */
+        .opacity-slider {
+            margin-top: 10px;
+        }
+        .opacity-slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        input[type="range"] {
+            flex: 1;
+            height: 6px;
+            border-radius: 5px;
+            background: linear-gradient(to right, transparent 0%, #fc4707 100%);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fc4707;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fc4707;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        .opacity-value {
+            color: #fc4707;
+            font-weight: 600;
+            min-width: 45px;
+            text-align: right;
+            font-size: 14px;
+        }
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -243,25 +252,21 @@
             margin-top: 20px;
             font-size: 13px;
         }
-        
         .stat-item {
             background: #2a2a2a;
             padding: 10px;
             border-radius: 8px;
             border: 1px solid #fc4707;
         }
-        
         .stat-label {
             color: #dddddd;
             font-weight: 600;
         }
-        
         .stat-value {
             color: #fc4707;
             font-size: 18px;
             font-weight: bold;
         }
-        
         .intersections-box {
             background: rgba(252, 71, 7, 0.05);
             padding: 15px;
@@ -269,13 +274,11 @@
             margin: 20px 0;
             border: 1px solid #fc4707;
         }
-        
         .intersections-box label:first-child {
             color: #fc4707;
             font-size: 15px;
             margin-bottom: 15px;
         }
-        
         .footer {
             text-align: center;
             margin-top: 40px;
@@ -283,19 +286,16 @@
             color: #dddddd;
             font-size: 14px;
         }
-        
         .footer .heart {
             color: #fc4707;
             font-size: 18px;
             display: inline-block;
             animation: pulse 1.5s ease-in-out infinite;
         }
-        
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.2); }
         }
-        
         .footer strong {
             color: #fc4707;
         }
@@ -309,23 +309,21 @@
                 <img src="https://i.imgur.com/6gGwuFn.png" alt="Logo" class="logo" onerror="this.style.display='none'">
                 <h1>Gerador de Venn Diagram</h1>
             </div>
-            <p>Crie diagramas personalizados com seus próprios dados</p>
+            <p>Martequinho cria o diagrama pra você!</p>
         </div>
-
         <!-- CONTEÚDO PRINCIPAL -->
         <div class="content">
             <!-- PAINEL ESQUERDO: FORMULÁRIO -->
             <div class="panel">
                 <div class="info-box">
                     <strong>💡 Como usar:</strong>
-                    Preencha os nomes e tamanhos de cada conjunto. Defina as interseções manualmente para controlar sobreposições.
+                    Preencha os nomes e tamanhos de cada conjunto. Defina as interseções e ajuste a transparência de cada cor.
                 </div>
-
                 <!-- CONJUNTO A -->
                 <div class="conjunto-card">
                     <div class="form-group">
                         <label>Nome do Conjunto A:</label>
-                        <input type="text" id="nameA" value="Clientes Mobile" placeholder="Ex: Clientes Mobile">
+                        <input type="text" id="nameA" value="" placeholder="Ex: Clientes Mobile">
                     </div>
                     <div class="form-group">
                         <label>Tamanho do Conjunto A:</label>
@@ -338,13 +336,20 @@
                             <span id="colorA-hex">#fc4707</span>
                         </div>
                     </div>
+                    <div class="form-group opacity-slider">
+                        <label>Transparência A:</label>
+                        <div class="opacity-slider-container">
+                            <input type="range" id="opacityA" min="0" max="100" value="70" 
+                                   oninput="document.getElementById('opacityA-value').textContent = this.value + '%'">
+                            <span class="opacity-value" id="opacityA-value">70%</span>
+                        </div>
+                    </div>
                 </div>
-
                 <!-- CONJUNTO B -->
                 <div class="conjunto-card">
                     <div class="form-group">
                         <label>Nome do Conjunto B:</label>
-                        <input type="text" id="nameB" value="Clientes Web" placeholder="Ex: Clientes Web">
+                        <input type="text" id="nameB" value="" placeholder="Ex: Clientes Web">
                     </div>
                     <div class="form-group">
                         <label>Tamanho do Conjunto B:</label>
@@ -357,13 +362,20 @@
                             <span id="colorB-hex">#ff8533</span>
                         </div>
                     </div>
+                    <div class="form-group opacity-slider">
+                        <label>Transparência B:</label>
+                        <div class="opacity-slider-container">
+                            <input type="range" id="opacityB" min="0" max="100" value="70" 
+                                   oninput="document.getElementById('opacityB-value').textContent = this.value + '%'">
+                            <span class="opacity-value" id="opacityB-value">70%</span>
+                        </div>
+                    </div>
                 </div>
-
                 <!-- CONJUNTO C -->
                 <div class="conjunto-card">
                     <div class="form-group">
                         <label>Nome do Conjunto C (opcional):</label>
-                        <input type="text" id="nameC" value="Newsletter" placeholder="Ex: Newsletter">
+                        <input type="text" id="nameC" value="" placeholder="Ex: Newsletter">
                     </div>
                     <div class="form-group">
                         <label>Tamanho do Conjunto C:</label>
@@ -376,41 +388,41 @@
                             <span id="colorC-hex">#ffaa66</span>
                         </div>
                     </div>
+                    <div class="form-group opacity-slider">
+                        <label>Transparência C:</label>
+                        <div class="opacity-slider-container">
+                            <input type="range" id="opacityC" min="0" max="100" value="70" 
+                                   oninput="document.getElementById('opacityC-value').textContent = this.value + '%'">
+                            <span class="opacity-value" id="opacityC-value">70%</span>
+                        </div>
+                    </div>
                 </div>
-
                 <!-- INTERSEÇÕES -->
                 <div class="intersections-box">
                     <label>⚙️ Interseções:</label>
-                    
                     <div class="form-group">
                         <label>Interseção A ∩ B:</label>
                         <input type="number" id="intersectionAB" value="50" min="0" placeholder="Elementos em A e B">
                     </div>
-
                     <div class="form-group">
                         <label>Interseção A ∩ C:</label>
                         <input type="number" id="intersectionAC" value="30" min="0" placeholder="Elementos em A e C">
                     </div>
-
                     <div class="form-group">
                         <label>Interseção B ∩ C:</label>
                         <input type="number" id="intersectionBC" value="40" min="0" placeholder="Elementos em B e C">
                     </div>
-
                     <div class="form-group">
                         <label>Interseção A ∩ B ∩ C:</label>
                         <input type="number" id="intersectionABC" value="20" min="0" placeholder="Elementos nos três">
                     </div>
                 </div>
-
                 <!-- BOTÕES DE AÇÃO -->
                 <button onclick="gerarDiagrama()">🎨 Gerar Diagrama</button>
                 <button class="btn-secondary" onclick="limparFormulario()">🔄 Limpar Tudo</button>
-
                 <!-- ESTATÍSTICAS -->
                 <div id="stats" class="stats-grid" style="display: none; margin-top: 20px;"></div>
             </div>
-
             <!-- PAINEL DIREITO: VISUALIZAÇÃO -->
             <div class="panel">
                 <div id="venn-container">
@@ -426,14 +438,12 @@
                 <button onclick="exportarPNG()" style="margin-top: 10px;" class="btn-secondary">📸 Exportar como PNG</button>
             </div>
         </div>
-
         <!-- FOOTER -->
         <div class="footer">
             <p>Criado com <span class="heart">🧡</span> pelo time de martech</p>
-            <p style="margin-top: 5px;">Qualquer problema ou sugestão, acionar <strong>@vmelo</strong></p>
+            <p style="margin-top: 5px;">Qualquer problema ou sugestão, acionar <strong>vmelo@cadastra.com</strong></p>
         </div>
     </div>
-
     <script>
         // ===================================================
         // ATUALIZAR PREVIEW DE COR
@@ -444,32 +454,29 @@
                 document.getElementById(`color${set}-hex`).textContent = e.target.value;
             });
         });
-
         // ===================================================
         // GERAR DIAGRAMA
         // ===================================================
         function gerarDiagrama() {
             console.log('🎨 Gerando diagrama...');
-            
             const nameA = document.getElementById('nameA').value || 'A';
             const nameB = document.getElementById('nameB').value || 'B';
             const nameC = document.getElementById('nameC').value || 'C';
-            
             const sizeA = parseInt(document.getElementById('sizeA').value) || 0;
             const sizeB = parseInt(document.getElementById('sizeB').value) || 0;
             const sizeC = parseInt(document.getElementById('sizeC').value) || 0;
-            
             const intersectionAB = parseInt(document.getElementById('intersectionAB').value) || 0;
             const intersectionAC = parseInt(document.getElementById('intersectionAC').value) || 0;
             const intersectionBC = parseInt(document.getElementById('intersectionBC').value) || 0;
             const intersectionABC = parseInt(document.getElementById('intersectionABC').value) || 0;
-
             const colorA = document.getElementById('colorA').value;
             const colorB = document.getElementById('colorB').value;
             const colorC = document.getElementById('colorC').value;
-
+            // Obter valores de opacidade (de 0-100 para 0-1)
+            const opacityA = parseInt(document.getElementById('opacityA').value) / 100;
+            const opacityB = parseInt(document.getElementById('opacityB').value) / 100;
+            const opacityC = parseInt(document.getElementById('opacityC').value) / 100;
             let data;
-            
             if (sizeC > 0) {
                 data = [
                     { sets: [nameA], size: sizeA, label: nameA },
@@ -487,155 +494,232 @@
                     { sets: [nameA, nameB], size: intersectionAB }
                 ];
             }
-
-            renderizarVenn(data, [colorA, colorB, colorC]);
+            renderizarVenn(data, [colorA, colorB, colorC], [opacityA, opacityB, opacityC]);
             mostrarEstatisticas(data);
         }
-
         // ===================================================
-        // RENDERIZAR VENN DIAGRAM COM VALORES
+        // RENDERIZAR VENN COM TRANSPARÊNCIA E POSIÇÕES AJUSTADAS
         // ===================================================
-        function renderizarVenn(data, colors = ['#fc4707', '#ff8533', '#ffaa66']) {
+        function renderizarVenn(data, colors = ['#fc4707', '#ff8533', '#ffaa66'], opacities = [0.7, 0.7, 0.7]) {
             console.log('📊 Iniciando renderização...');
-            
             try {
                 const container = document.getElementById('venn-container');
                 container.innerHTML = '<div id="venn"></div>';
-
                 if (typeof venn === 'undefined' || typeof venn.VennDiagram !== 'function') {
                     throw new Error('venn.VennDiagram não encontrado');
                 }
-
                 const chart = venn.VennDiagram()
                     .width(900)
                     .height(650);
-
-                const svg = d3.select("#venn")
-                    .datum(data)
-                    .call(chart);
-
-                const colorScale = d3.scaleOrdinal()
-                    .domain(data.filter(d => d.sets.length === 1).map(d => d.sets[0]))
-                    .range(colors);
-
-                // Estilizar paths
+                const div = d3.select("#venn");
+                div.datum(data).call(chart);
+                const svg = div.select("svg");
+                // Mapeamento de cores e opacidades
+                const colorMap = {};
+                const opacityMap = {};
+                data.filter(d => d.sets.length === 1).forEach((d, i) => {
+                    colorMap[d.sets[0]] = colors[i];
+                    opacityMap[d.sets[0]] = opacities[i];
+                });
+                // Estilizar paths COM OPACIDADE PERSONALIZADA
                 svg.selectAll("path")
                     .style("fill", d => {
                         if (d.sets.length === 1) {
-                            return colorScale(d.sets[0]);
+                            return colorMap[d.sets[0]];
                         }
-                        return colorScale(d.sets[0]);
+                        return colorMap[d.sets[0]];
                     })
-                    .style("fill-opacity", 0.7)
+                    .style("fill-opacity", d => {
+                        if (d.sets.length === 1) {
+                            return opacityMap[d.sets[0]];
+                        }
+                        // Para interseções, usar média das opacidades
+                        const avgOpacity = d.sets.reduce((sum, set) => sum + (opacityMap[set] || 0.7), 0) / d.sets.length;
+                        return avgOpacity;
+                    })
                     .style("stroke", "#fc4707")
                     .style("stroke-width", 3);
-
                 // ===== REMOVER TEXTOS PADRÃO =====
                 svg.selectAll("text").remove();
-
                 // ===== CALCULAR VALORES EXCLUSIVOS =====
                 function calcularExclusivo(nomeConjunto, data) {
                     const conjunto = data.find(d => d.sets.length === 1 && d.sets[0] === nomeConjunto);
                     if (!conjunto) return 0;
-                    
                     let total = conjunto.size;
-                    
-                    // Subtrair todas as interseções
                     data.forEach(item => {
                         if (item.sets.length > 1 && item.sets.includes(nomeConjunto)) {
                             total -= item.size;
                         }
                     });
-                    
                     return Math.max(0, total);
                 }
-
-                // ===== ADICIONAR TEXTOS CUSTOMIZADOS =====
+                // ===== CALCULAR TOTAIS PARA PORCENTAGEM =====
+                const totais = {};
+                data.filter(d => d.sets.length === 1).forEach(d => {
+                    totais[d.sets[0]] = d.size;
+                });
+                // ===== MAPEAR E ORDENAR ÁREAS =====
+                const areas = [];
                 svg.selectAll("g").each(function(d) {
-                    const g = d3.select(this);
-                    
-                    // Calcular centro da área
-                    const bbox = this.querySelector('path').getBBox();
-                    const centerX = bbox.x + bbox.width / 2;
-                    const centerY = bbox.y + bbox.height / 2;
-
+                    areas.push({
+                        element: this,
+                        data: d,
+                        path: this.querySelector('path')
+                    });
+                });
+                areas.sort((a, b) => a.data.sets.length - b.data.sets.length);
+                // ===== ADICIONAR TEXTOS COM POSIÇÕES AJUSTADAS =====
+                areas.forEach(area => {
+                    const d = area.data;
+                    const g = d3.select(area.element);
+                    const path = area.path;
+                    if (!path) return;
+                    const bbox = path.getBBox();
+                    let centerX = bbox.x + bbox.width / 2;
+                    let centerY = bbox.y + bbox.height / 2;
                     if (d.sets.length === 1) {
-                        // CONJUNTO ÚNICO - Nome + Valor Exclusivo
+                        // CONJUNTO ÚNICO - AJUSTAR POSIÇÃO PARA ÁREA EXCLUSIVA
                         const nomeConjunto = d.sets[0];
                         const valorExclusivo = calcularExclusivo(nomeConjunto, data);
-                        
-                        // Nome do conjunto
+                        const totalConjunto = totais[nomeConjunto];
+                        const porcentagem = totalConjunto > 0 ? (valorExclusivo / totalConjunto * 100) : 0;
+                        // Calcular offset maior para afastar de interseções
+                        const svgCenter = { x: 450, y: 325 };
+                        const angle = Math.atan2(centerY - svgCenter.y, centerX - svgCenter.x);
+                        const offset = Math.min(bbox.width, bbox.height) * 0.35;  // Aumentado de 0.30 para 0.35
+                        centerX += Math.cos(angle) * offset;
+                        centerY += Math.sin(angle) * offset;
+                        // Nome
                         g.append("text")
                             .attr("x", centerX)
-                            .attr("y", centerY - 15)
+                            .attr("y", centerY - 25)
                             .attr("text-anchor", "middle")
                             .style("fill", "#ffffff")
-                            .style("font-size", "16px")
+                            .style("font-size", "15px")
                             .style("font-weight", "700")
                             .style("text-shadow", "2px 2px 6px rgba(0,0,0,0.95)")
                             .text(d.label || nomeConjunto);
-                        
-                        // Valor exclusivo (grande)
+                        // Valor
                         g.append("text")
                             .attr("x", centerX)
-                            .attr("y", centerY + 15)
+                            .attr("y", centerY + 5)
                             .attr("text-anchor", "middle")
                             .style("fill", "#dddddd")
-                            .style("font-size", "32px")
+                            .style("font-size", "30px")
                             .style("font-weight", "bold")
                             .style("text-shadow", "2px 2px 8px rgba(0,0,0,0.95)")
                             .text(valorExclusivo.toLocaleString('pt-BR'));
-
+                        // Porcentagem
+                        g.append("text")
+                            .attr("x", centerX)
+                            .attr("y", centerY + 24)
+                            .attr("text-anchor", "middle")
+                            .style("fill", "#dddddd")
+                            .style("font-size", "15px")
+                            .style("font-weight", "600")
+                            .style("opacity", "0.85")
+                            .style("text-shadow", "1px 1px 4px rgba(0,0,0,0.9)")
+                            .text(`(${porcentagem.toFixed(1)}%)`);
                     } else if (d.sets.length === 2) {
-                        // INTERSEÇÃO DE 2 CONJUNTOS
-                        const valor = d.size - (data.find(item => 
-                            item.sets.length === 3 && 
+                        // INTERSEÇÃO DE 2 - AFASTAR DO CENTRO
+                        const valor = d.size - (data.find(item =>
+                            item.sets.length === 3 &&
                             d.sets.every(s => item.sets.includes(s))
                         )?.size || 0);
                         
+                        const total1 = totais[d.sets[0]] || 1;
+                        const total2 = totais[d.sets[1]] || 1;
+                        const porcentagem = ((valor / total1 * 100) + (valor / total2 * 100)) / 2;
+                        
+                        // Identificar qual interseção é e ajustar posição
+                        // Se tiver 3 conjuntos, afastar do centro
+                        if (data.some(item => item.sets.length === 3)) {
+                            const svgCenter = { x: 450, y: 325 };
+                            const angle = Math.atan2(centerY - svgCenter.y, centerX - svgCenter.x);
+                            const offset = 25;  // Offset fixo para afastar do centro
+                            centerX += Math.cos(angle) * offset;
+                            centerY += Math.sin(angle) * offset;
+                        }
+                        
+                        // Valor
                         g.append("text")
                             .attr("x", centerX)
-                            .attr("y", centerY + 8)
+                            .attr("y", centerY - 5)
                             .attr("text-anchor", "middle")
                             .style("fill", "#ffffff")
-                            .style("font-size", "26px")
+                            .style("font-size", "22px")
                             .style("font-weight", "bold")
                             .style("text-shadow", "2px 2px 8px rgba(0,0,0,0.95)")
                             .text(Math.max(0, valor).toLocaleString('pt-BR'));
-
-                    } else if (d.sets.length === 3) {
-                        // INTERSEÇÃO DE 3 CONJUNTOS (centro)
+                        
+                        // Porcentagem
                         g.append("text")
                             .attr("x", centerX)
-                            .attr("y", centerY + 8)
+                            .attr("y", centerY + 13)
+                            .attr("text-anchor", "middle")
+                            .style("fill", "#dddddd")
+                            .style("font-size", "13px")
+                            .style("font-weight", "600")
+                            .style("opacity", "0.85")
+                            .style("text-shadow", "1px 1px 4px rgba(0,0,0,0.9)")
+                            .text(`(${porcentagem.toFixed(1)}%)`);
+                    } else if (d.sets.length === 3) {
+                        // CENTRO (3 CONJUNTOS)
+                        const porcentagemMedia = d.sets.reduce((sum, set) => {
+                            return sum + (d.size / (totais[set] || 1) * 100);
+                        }, 0) / d.sets.length;
+                        // Valor
+                        g.append("text")
+                            .attr("x", centerX)
+                            .attr("y", centerY - 4)
                             .attr("text-anchor", "middle")
                             .style("fill", "#ffffff")
-                            .style("font-size", "24px")
+                            .style("font-size", "20px")
                             .style("font-weight", "bold")
                             .style("text-shadow", "2px 2px 8px rgba(0,0,0,0.95)")
                             .text(d.size.toLocaleString('pt-BR'));
+                        // Porcentagem
+                        g.append("text")
+                            .attr("x", centerX)
+                            .attr("y", centerY + 12)
+                            .attr("text-anchor", "middle")
+                            .style("fill", "#dddddd")
+                            .style("font-size", "12px")
+                            .style("font-weight", "600")
+                            .style("opacity", "0.85")
+                            .style("text-shadow", "1px 1px 4px rgba(0,0,0,0.9)")
+                            .text(`(${porcentagemMedia.toFixed(1)}%)`);
                     }
                 });
-
                 // ===== HOVER EFFECTS =====
                 svg.selectAll("g")
-                    .on("mouseover", function() {
+                    .on("mouseover", function(event, d) {
                         d3.select(this).select("path")
                             .transition()
                             .duration(200)
-                            .style("fill-opacity", 0.9)
+                            .style("fill-opacity", d => {
+                                if (d.sets.length === 1) {
+                                    return Math.min(1, (opacityMap[d.sets[0]] || 0.7) + 0.15);
+                                }
+                                const avgOpacity = d.sets.reduce((sum, set) => sum + (opacityMap[set] || 0.7), 0) / d.sets.length;
+                                return Math.min(1, avgOpacity + 0.15);
+                            })
                             .style("stroke-width", 4);
                     })
-                    .on("mouseout", function() {
+                    .on("mouseout", function(event, d) {
                         d3.select(this).select("path")
                             .transition()
                             .duration(200)
-                            .style("fill-opacity", 0.7)
+                            .style("fill-opacity", d => {
+                                if (d.sets.length === 1) {
+                                    return opacityMap[d.sets[0]] || 0.7;
+                                }
+                                const avgOpacity = d.sets.reduce((sum, set) => sum + (opacityMap[set] || 0.7), 0) / d.sets.length;
+                                return avgOpacity;
+                            })
                             .style("stroke-width", 3);
                     });
-
-                console.log('✅ Diagrama renderizado com valores corretos!');
-
+                console.log('✅ Diagrama renderizado com transparência personalizada!');
             } catch (error) {
                 console.error('❌ Erro:', error);
                 document.getElementById('venn-container').innerHTML = `
@@ -646,17 +730,13 @@
                 `;
             }
         }
-
         // ===================================================
         // MOSTRAR ESTATÍSTICAS
         // ===================================================
         function mostrarEstatisticas(data) {
             const statsDiv = document.getElementById('stats');
             statsDiv.style.display = 'grid';
-            
             let html = '<div style="grid-column: 1 / -1; margin-bottom: 10px;"><strong style="color: #fc4707; font-size: 15px;">📊 Estatísticas Detalhadas:</strong></div>';
-            
-            // Adicionar valores exclusivos
             data.filter(d => d.sets.length === 1).forEach(item => {
                 const exclusivo = calcularExclusivoGlobal(item.sets[0], data);
                 html += `
@@ -666,21 +746,14 @@
                     </div>
                 `;
             });
-            
-            // Adicionar interseções
-            data.filter(d => d.sets.length > 1).forEach(item => {
+            data.filter(d => d.sets.length === 2).forEach(item => {
                 const label = item.sets.join(' ∩ ');
                 let valor = item.size;
-                
-                // Para interseções de 2, subtrair a de 3 se existir
-                if (item.sets.length === 2) {
-                    const int3 = data.find(d => 
-                        d.sets.length === 3 && 
-                        item.sets.every(s => d.sets.includes(s))
-                    );
-                    if (int3) valor -= int3.size;
-                }
-                
+                const int3 = data.find(d =>
+                    d.sets.length === 3 &&
+                    item.sets.every(s => d.sets.includes(s))
+                );
+                if (int3) valor -= int3.size;
                 html += `
                     <div class="stat-item">
                         <div class="stat-label">${label}</div>
@@ -688,32 +761,35 @@
                     </div>
                 `;
             });
-            
+            const centro = data.find(d => d.sets.length === 3);
+            if (centro) {
+                html += `
+                    <div class="stat-item" style="grid-column: 1 / -1;">
+                        <div class="stat-label">${centro.sets.join(' ∩ ')}</div>
+                        <div class="stat-value">${centro.size.toLocaleString('pt-BR')}</div>
+                    </div>
+                `;
+            }
             statsDiv.innerHTML = html;
         }
-
         function calcularExclusivoGlobal(nomeConjunto, data) {
             const conjunto = data.find(d => d.sets.length === 1 && d.sets[0] === nomeConjunto);
             if (!conjunto) return 0;
-            
             let total = conjunto.size;
             data.forEach(item => {
                 if (item.sets.length > 1 && item.sets.includes(nomeConjunto)) {
                     total -= item.size;
                 }
             });
-            
             return Math.max(0, total);
         }
-
         // ===================================================
         // LIMPAR FORMULÁRIO
         // ===================================================
         function limparFormulario() {
-            document.getElementById('nameA').value = 'Conjunto A';
-            document.getElementById('nameB').value = 'Conjunto B';
-            document.getElementById('nameC').value = 'Conjunto C';
-            
+            document.getElementById('nameA').value = '';
+            document.getElementById('nameB').value = '';
+            document.getElementById('nameC').value = '';
             document.getElementById('sizeA').value = '100';
             document.getElementById('sizeB').value = '100';
             document.getElementById('sizeC').value = '0';
@@ -721,14 +797,18 @@
             document.getElementById('intersectionAC').value = '0';
             document.getElementById('intersectionBC').value = '0';
             document.getElementById('intersectionABC').value = '0';
-            
             document.getElementById('colorA').value = '#fc4707';
             document.getElementById('colorB').value = '#ff8533';
             document.getElementById('colorC').value = '#ffaa66';
             document.getElementById('colorA-hex').textContent = '#fc4707';
             document.getElementById('colorB-hex').textContent = '#ff8533';
             document.getElementById('colorC-hex').textContent = '#ffaa66';
-            
+            document.getElementById('opacityA').value = '70';
+            document.getElementById('opacityB').value = '70';
+            document.getElementById('opacityC').value = '70';
+            document.getElementById('opacityA-value').textContent = '70%';
+            document.getElementById('opacityB-value').textContent = '70%';
+            document.getElementById('opacityC-value').textContent = '70%';
             document.getElementById('venn-container').innerHTML = `
                 <div class="placeholder">
                     <svg viewBox="0 0 200 200">
@@ -738,10 +818,8 @@
                     <p style="color: #dddddd;">Preencha os dados ao lado e clique em "Gerar Diagrama"</p>
                 </div>
             `;
-            
             document.getElementById('stats').style.display = 'none';
         }
-
         // ===================================================
         // EXPORTAR SVG
         // ===================================================
@@ -751,21 +829,17 @@
                 alert('⚠️ Gere um diagrama primeiro!');
                 return;
             }
-
             const serializer = new XMLSerializer();
             const svgString = serializer.serializeToString(svgElement);
             const blob = new Blob([svgString], { type: 'image/svg+xml' });
             const url = URL.createObjectURL(blob);
-            
             const a = document.createElement('a');
             a.href = url;
             a.download = `venn-diagram-${Date.now()}.svg`;
             a.click();
-            
             URL.revokeObjectURL(url);
             alert('✅ SVG exportado com sucesso!');
         }
-
         // ===================================================
         // EXPORTAR PNG
         // ===================================================
@@ -775,24 +849,18 @@
                 alert('⚠️ Gere um diagrama primeiro!');
                 return;
             }
-
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             const svgData = new XMLSerializer().serializeToString(svgElement);
-            
             const img = new Image();
             const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
             const url = URL.createObjectURL(svgBlob);
-            
             img.onload = function() {
                 canvas.width = img.width * 2;
                 canvas.height = img.height * 2;
-                
-                // Fundo preto
                 ctx.fillStyle = '#FFFFFF';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                
                 canvas.toBlob(function(blob) {
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
@@ -802,13 +870,10 @@
                     URL.revokeObjectURL(url);
                     alert('✅ PNG exportado com sucesso!');
                 });
-                
                 URL.revokeObjectURL(url);
             };
-            
             img.src = url;
         }
-
         // ===================================================
         // CARREGAR DIAGRAMA INICIAL
         // ===================================================
