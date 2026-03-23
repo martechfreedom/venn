@@ -600,43 +600,26 @@
                 .filter(x => x.length > 0);
         }
 
-// Renderizar Venn Diagram (VERSÃO COMPATÍVEL COM UMD)
-function renderizarVenn(data, colors = ['#FF6B6B', '#4ECDC4', '#45B7D1']) {
+// Renderizar Venn Diagram (COM VALORES CORRETOS)
+function renderizarVenn(data, colors = ['#fc4707', '#ff8533', '#ffaa66']) {
     console.log('📊 Iniciando renderização...');
-    console.log('Dados:', data);
     
     try {
         const container = document.getElementById('venn-container');
         container.innerHTML = '<div id="venn"></div>';
 
-        // CORREÇÃO: Verificar múltiplas formas de acesso à biblioteca
-        let VennDiagramFunc;
-        
-        if (typeof venn !== 'undefined' && typeof venn.VennDiagram === 'function') {
-            VennDiagramFunc = venn.VennDiagram;
-            console.log('✅ Usando venn.VennDiagram');
-        } else if (typeof window.venn !== 'undefined' && typeof window.venn.VennDiagram === 'function') {
-            VennDiagramFunc = window.venn.VennDiagram;
-            console.log('✅ Usando window.venn.VennDiagram');
-        } else {
-            throw new Error('venn.VennDiagram não encontrado. Verifique se /build/venn.js carregou corretamente.');
+        if (typeof venn === 'undefined' || typeof venn.VennDiagram !== 'function') {
+            throw new Error('venn.VennDiagram não encontrado');
         }
 
-        // Criar chart
-        const chart = VennDiagramFunc()
-            .width(800)
-            .height(600);
+        const chart = venn.VennDiagram()
+            .width(900)
+            .height(650);
 
-        console.log('Chart criado:', typeof chart);
-
-        // Renderizar
         const svg = d3.select("#venn")
             .datum(data)
             .call(chart);
 
-        console.log('SVG renderizado');
-
-        // Aplicar cores customizadas
         const colorScale = d3.scaleOrdinal()
             .domain(data.filter(d => d.sets.length === 1).map(d => d.sets[0]))
             .range(colors);
@@ -649,58 +632,160 @@ function renderizarVenn(data, colors = ['#FF6B6B', '#4ECDC4', '#45B7D1']) {
                 }
                 return colorScale(d.sets[0]);
             })
-            .style("fill-opacity", 0.6)
-            .style("stroke", "white")
+            .style("fill-opacity", 0.7)
+            .style("stroke", "#fc4707")
             .style("stroke-width", 3);
 
-        // Estilizar textos
-        svg.selectAll("text")
-            .style("fill", "white")
-            .style("font-size", "16px")
-            .style("font-weight", "bold")
-            .style("text-shadow", "2px 2px 4px rgba(0,0,0,0.7)");
+        // ===== MODIFICAÇÃO: EXIBIR VALORES CORRETOS =====
+        
+        // Remover textos padrão do venn.js
+        svg.selectAll("text").remove();
+
+        // Calcular valores exclusivos de cada conjunto
+        const conjuntos = data.filter(d => d.sets.length === 1);
+        const numConjuntos = conjuntos.length;
+
+        // Função para calcular valor exclusivo (somente no conjunto, sem interseções)
+        function calcularExclusivo(nomeConjunto, data) {
+            const conjunto = data.find(d => d.sets.length === 1 && d.sets[0] === nomeConjunto);
+            if (!conjunto) return 0;
+            
+            let total = conjunto.size;
+            
+            // Subtrair todas as interseções que incluem este conjunto
+            data.forEach(item => {
+                if (item.sets.length > 1 && item.sets.includes(nomeConjunto)) {
+                    total -= item.size;
+                }
+            });
+            
+            return Math.max(0, total);
+        }
+
+        // Adicionar textos personalizados para cada área
+        svg.selectAll("g").each(function(d) {
+            const g = d3.select(this);
+            const circle = chart().circles ? chart().circles[d.sets[0]] : null;
+            
+            // Pegar coordenadas do centro (calculadas pelo venn.js)
+            const textCentres = chart().textCentres || {};
+            const centre = textCentres[d.sets] || d;
+
+            if (d.sets.length === 1) {
+                // CONJUNTO ÚNICO - Mostrar nome + valor exclusivo
+                const nomeConjunto = d.sets[0];
+                const valorExclusivo = calcularExclusivo(nomeConjunto, data);
+                
+                // Nome do conjunto
+                g.append("text")
+                    .attr("x", centre.x)
+                    .attr("y", centre.y - 15)
+                    .attr("text-anchor", "middle")
+                    .style("fill", "#ffffff")
+                    .style("font-size", "16px")
+                    .style("font-weight", "bold")
+                    .style("text-shadow", "2px 2px 6px rgba(0,0,0,0.9)")
+                    .text(d.label || nomeConjunto);
+                
+                // Valor exclusivo
+                g.append("text")
+                    .attr("x", centre.x)
+                    .attr("y", centre.y + 10)
+                    .attr("text-anchor", "middle")
+                    .style("fill", "#dddddd")
+                    .style("font-size", "24px")
+                    .style("font-weight", "bold")
+                    .style("text-shadow", "2px 2px 6px rgba(0,0,0,0.9)")
+                    .text(valorExclusivo.toLocaleString('pt-BR'));
+
+            } else if (d.sets.length === 2) {
+                // INTERSEÇÃO DE 2 CONJUNTOS
+                g.append("text")
+                    .attr("x", centre.x)
+                    .attr("y", centre.y + 5)
+                    .attr("text-anchor", "middle")
+                    .style("fill", "#ffffff")
+                    .style("font-size", "22px")
+                    .style("font-weight", "bold")
+                    .style("text-shadow", "2px 2px 6px rgba(0,0,0,0.9)")
+                    .text(d.size.toLocaleString('pt-BR'));
+
+            } else if (d.sets.length === 3) {
+                // INTERSEÇÃO DE 3 CONJUNTOS (centro)
+                g.append("text")
+                    .attr("x", centre.x)
+                    .attr("y", centre.y + 5)
+                    .attr("text-anchor", "middle")
+                    .style("fill", "#ffffff")
+                    .style("font-size", "20px")
+                    .style("font-weight", "bold")
+                    .style("text-shadow", "2px 2px 6px rgba(0,0,0,0.9)")
+                    .text(d.size.toLocaleString('pt-BR'));
+            }
+        });
 
         // Hover effects
         svg.selectAll("g")
-            .on("mouseover", function() {
+            .on("mouseover", function(event, d) {
                 d3.select(this).select("path")
                     .transition()
                     .duration(200)
-                    .style("fill-opacity", 0.8);
+                    .style("fill-opacity", 0.9)
+                    .style("stroke-width", 4);
+                
+                // Mostrar tooltip com detalhes
+                const tooltip = svg.append("g")
+                    .attr("class", "tooltip")
+                    .attr("transform", `translate(${event.pageX}, ${event.pageY})`);
+                
+                const label = d.sets.join(' ∩ ');
+                tooltip.append("rect")
+                    .attr("fill", "#1a1a1a")
+                    .attr("stroke", "#fc4707")
+                    .attr("stroke-width", 2)
+                    .attr("rx", 5)
+                    .attr("width", 150)
+                    .attr("height", 50)
+                    .attr("x", -75)
+                    .attr("y", -60);
+                
+                tooltip.append("text")
+                    .attr("fill", "#dddddd")
+                    .attr("text-anchor", "middle")
+                    .attr("y", -40)
+                    .style("font-size", "12px")
+                    .text(label);
+                
+                tooltip.append("text")
+                    .attr("fill", "#fc4707")
+                    .attr("text-anchor", "middle")
+                    .attr("y", -22)
+                    .style("font-size", "18px")
+                    .style("font-weight", "bold")
+                    .text(d.size.toLocaleString('pt-BR'));
             })
             .on("mouseout", function() {
                 d3.select(this).select("path")
                     .transition()
                     .duration(200)
-                    .style("fill-opacity", 0.6);
+                    .style("fill-opacity", 0.7)
+                    .style("stroke-width", 3);
+                
+                svg.selectAll(".tooltip").remove();
             });
 
-        console.log('✅ Diagrama renderizado com sucesso!');
+        console.log('✅ Diagrama renderizado!');
 
     } catch (error) {
-        console.error('❌ Erro em renderizarVenn:', error);
-        console.error('Stack:', error.stack);
-        
-        // Mostrar erro visualmente
+        console.error('❌ Erro:', error);
         document.getElementById('venn-container').innerHTML = `
-            <div style="background: #fee; color: #c00; padding: 30px; border-radius: 12px; text-align: center;">
+            <div style="background: rgba(255,0,0,0.1); color: #fc4707; padding: 30px; border-radius: 12px; text-align: center; border: 2px solid #fc4707;">
                 <h3>❌ Erro ao gerar diagrama</h3>
-                <p><strong>Mensagem:</strong> ${error.message}</p>
-                <p><small>Verifique o console (F12) para mais detalhes.</small></p>
-                <hr style="margin: 20px 0;">
-                <p><strong>Debug:</strong></p>
-                <pre style="text-align: left; background: #f5f5f5; padding: 10px; overflow: auto;">
-venn disponível: ${typeof venn}
-venn.VennDiagram: ${typeof venn?.VennDiagram}
-window.venn: ${typeof window.venn}
-Métodos em venn: ${typeof venn === 'object' ? Object.keys(venn).join(', ') : 'N/A'}
-                </pre>
+                <p style="color: #dddddd; margin-top: 10px;">${error.message}</p>
             </div>
         `;
-        
-        throw error;
     }
-}
+}        
         // Mostrar estatísticas
         function mostrarEstatisticas(data) {
             const statsDiv = document.getElementById('stats');
