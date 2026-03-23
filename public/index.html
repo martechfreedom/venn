@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venn Diagram - BigQuery</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/venn.js@0.2.20/venn.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .controls {
+            margin: 20px 0;
+            text-align: center;
+        }
+        button {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+        button:hover {
+            background: #357ae8;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        #venn {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #4285f4;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+        .stat-value {
+            color: #333;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .loading {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+        }
+        .error {
+            background: #fee;
+            color: #c00;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Venn Diagram - BigQuery Analysis</h1>
+        
+        <div class="controls">
+            <button onclick="carregarDados()">Buscar Dados Reais</button>
+            <button onclick="carregarMock()">Dados de Exemplo</button>
+        </div>
+
+        <div id="loading" class="loading" style="display: none;">
+            ⏳ Carregando dados do BigQuery...
+        </div>
+
+        <div id="error" class="error" style="display: none;"></div>
+
+        <div id="venn"></div>
+
+        <div id="stats" class="stats"></div>
+    </div>
+
+    <script>
+        // Configuração
+        const API_BASE = window.location.origin;
+
+        // Carregar dados reais do BigQuery
+        async function carregarDados() {
+            mostrarLoading(true);
+            limparErro();
+
+            try {
+                const response = await fetch(`${API_BASE}/api/venn-data`);
+                const result = await response.json();
+
+                if (!result.success) {
+                    throw new Error(result.error);
+                }
+
+                renderizarVenn(result.data);
+                mostrarEstatisticas(result.metadata);
+
+            } catch (error) {
+                mostrarErro(`Erro ao buscar dados: ${error.message}`);
+            } finally {
+                mostrarLoading(false);
+            }
+        }
+
+        // Carregar dados mockados (para teste)
+        async function carregarMock() {
+            mostrarLoading(true);
+            limparErro();
+
+            try {
+                const response = await fetch(`${API_BASE}/api/venn-data/mock`);
+                const result = await response.json();
+
+                renderizarVenn(result.data);
+                mostrarEstatisticas(result.metadata);
+
+            } catch (error) {
+                mostrarErro(`Erro: ${error.message}`);
+            } finally {
+                mostrarLoading(false);
+            }
+        }
+
+        // Renderizar diagrama de Venn
+        function renderizarVenn(data) {
+            const div = document.getElementById('venn');
+            div.innerHTML = ''; // Limpar
+
+            const chart = venn.VennDiagram()
+                .width(800)
+                .height(600);
+
+            d3.select("#venn")
+                .datum(data)
+                .call(chart);
+
+            // Adicionar tooltips
+            d3.selectAll("#venn .venn-circle path")
+                .style("fill-opacity", 0.6);
+
+            d3.selectAll("#venn text")
+                .style("fill", "white")
+                .style("font-size", "16px")
+                .style("font-weight", "bold");
+        }
+
+        // Mostrar estatísticas
+        function mostrarEstatisticas(metadata) {
+            const statsDiv = document.getElementById('stats');
+            
+            if (!metadata.totals) {
+                statsDiv.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-label">Modo</div>
+                        <div class="stat-value">${metadata.mode || 'Real'}</div>
+                    </div>
+                `;
+                return;
+            }
+
+            statsDiv.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-label">📱 Mobile</div>
+                    <div class="stat-value">${metadata.totals.mobile}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">🌐 Web</div>
+                    <div class="stat-value">${metadata.totals.web}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">📧 Newsletter</div>
+                    <div class="stat-value">${metadata.totals.newsletter}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">🕒 Atualizado</div>
+                    <div class="stat-value" style="font-size: 14px;">
+                        ${new Date(metadata.timestamp).toLocaleString('pt-BR')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Funções auxiliares
+        function mostrarLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            document.querySelectorAll('button').forEach(btn => btn.disabled = show);
+        }
+
+        function mostrarErro(mensagem) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = mensagem;
+            errorDiv.style.display = 'block';
+        }
+
+        function limparErro() {
+            document.getElementById('error').style.display = 'none';
+        }
+
+        // Carregar exemplo ao iniciar
+        window.onload = () => carregarMock();
+    </script>
+</body>
+</html>
