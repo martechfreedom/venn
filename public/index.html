@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Venn Diagram - Gerador Personalizado</title>
+    <title>Gerador de Venn Diagram</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/venn.js@0.2.20/build/venn.min.js"></script>
     <style>
@@ -14,7 +14,7 @@
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #000000;
             min-height: 100vh;
             padding: 20px;
         }
@@ -24,89 +24,97 @@
         }
         .header {
             text-align: center;
-            color: white;
             margin-bottom: 30px;
         }
+        .header-top {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        .logo {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
         .header h1 {
-            font-size: 3em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-size: 2.5em;
+            color: #ffffff;
+            margin: 0;
+            font-weight: 700;
         }
         .header p {
-            font-size: 1.2em;
-            opacity: 0.9;
+            font-size: 1.1em;
+            color: #dddddd;
+            margin-top: 10px;
         }
         .content {
             display: grid;
-            grid-template-columns: 400px 1fr;
+            grid-template-columns: 450px 1fr;
             gap: 20px;
         }
         @media (max-width: 1024px) {
             .content {
                 grid-template-columns: 1fr;
             }
+            .logo {
+                height: 35px;
+            }
+            .header h1 {
+                font-size: 2em;
+            }
+            .header p {
+                font-size: 1em;
+            }
         }
         .panel {
-            background: white;
+            background: #1a1a1a;
             border-radius: 16px;
             padding: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-        .panel h2 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
+            box-shadow: 0 20px 60px rgba(252, 71, 7, 0.3);
+            border: 2px solid #fc4707;
         }
         .form-group {
             margin-bottom: 20px;
         }
         label {
             display: block;
-            color: #555;
+            color: #dddddd;
             font-weight: 600;
             margin-bottom: 8px;
             font-size: 14px;
         }
         input[type="text"],
-        input[type="number"],
-        textarea {
+        input[type="number"] {
             width: 100%;
             padding: 12px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #fc4707;
             border-radius: 8px;
             font-size: 14px;
             transition: all 0.3s;
+            background: #2a2a2a;
+            color: #dddddd;
         }
-        input:focus,
-        textarea:focus {
+        input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #fc4707;
+            box-shadow: 0 0 0 3px rgba(252, 71, 7, 0.2);
         }
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-            font-family: monospace;
+        input::placeholder {
+            color: #666;
         }
         .conjunto-card {
-            background: #f8f9fa;
+            background: #2a2a2a;
             padding: 20px;
             border-radius: 12px;
             margin-bottom: 15px;
-            border-left: 4px solid #667eea;
-        }
-        .conjunto-card:nth-child(2) {
-            border-left-color: #f093fb;
-        }
-        .conjunto-card:nth-child(3) {
-            border-left-color: #4facfe;
+            border-left: 4px solid #fc4707;
         }
         button {
             width: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: #fc4707;
+            color: #dddddd;
             border: none;
             padding: 16px;
             font-size: 16px;
@@ -114,35 +122,39 @@
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 15px rgba(252, 71, 7, 0.4);
             margin-top: 10px;
         }
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+            box-shadow: 0 6px 20px rgba(252, 71, 7, 0.6);
+            background: #dd3f06;
         }
         button:active {
             transform: translateY(0);
         }
         .btn-secondary {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+            background: #666;
+            box-shadow: 0 4px 15px rgba(102, 102, 102, 0.4);
         }
         .btn-secondary:hover {
-            box-shadow: 0 6px 20px rgba(240, 147, 251, 0.6);
+            box-shadow: 0 6px 20px rgba(102, 102, 102, 0.6);
+            background: #555;
         }
         #venn-container {
             min-height: 600px;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: #0a0a0a;
+            border-radius: 12px;
         }
         #venn {
             width: 100%;
         }
         .placeholder {
             text-align: center;
-            color: #999;
+            color: #666;
             padding: 100px 20px;
         }
         .placeholder svg {
@@ -152,42 +164,18 @@
             margin-bottom: 20px;
         }
         .info-box {
-            background: #e3f2fd;
-            border-left: 4px solid #2196f3;
+            background: rgba(252, 71, 7, 0.1);
+            border-left: 4px solid #fc4707;
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
             font-size: 13px;
-            color: #1976d2;
+            color: #dddddd;
         }
         .info-box strong {
             display: block;
             margin-bottom: 5px;
-        }
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .tab {
-            flex: 1;
-            padding: 12px;
-            background: #f5f5f5;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        .tab.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
+            color: #fc4707;
         }
         .color-picker {
             display: flex;
@@ -197,28 +185,13 @@
         input[type="color"] {
             width: 50px;
             height: 40px;
-            border: none;
+            border: 2px solid #fc4707;
             border-radius: 8px;
             cursor: pointer;
+            background: #2a2a2a;
         }
-        .examples {
-            display: grid;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        .example-btn {
-            padding: 12px;
-            background: #f5f5f5;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.3s;
-            font-size: 13px;
-        }
-        .example-btn:hover {
-            border-color: #667eea;
-            background: #f8f9ff;
+        .color-picker span {
+            color: #dddddd;
         }
         .stats-grid {
             display: grid;
@@ -228,212 +201,148 @@
             font-size: 13px;
         }
         .stat-item {
-            background: #f8f9fa;
+            background: #2a2a2a;
             padding: 10px;
             border-radius: 8px;
+            border: 1px solid #fc4707;
         }
         .stat-label {
-            color: #666;
+            color: #dddddd;
             font-weight: 600;
         }
         .stat-value {
-            color: #333;
+            color: #fc4707;
             font-size: 18px;
             font-weight: bold;
+        }
+        .intersections-box {
+            background: rgba(252, 71, 7, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #fc4707;
+        }
+        .intersections-box label:first-child {
+            color: #fc4707;
+            font-size: 15px;
+            margin-bottom: 15px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>📊 Gerador de Venn Diagram</h1>
+            <div class="header-top">
+                <img src="https://i.imgur.com/6gGwuFn.png" alt="Logo" class="logo" onerror="this.style.display='none'">
+                <h1>Gerador de Venn Diagram</h1>
+            </div>
             <p>Crie diagramas personalizados com seus próprios dados</p>
         </div>
 
         <div class="content">
             <!-- PAINEL ESQUERDO: FORMULÁRIO -->
             <div class="panel">
-                <div class="tabs">
-                    <button class="tab active" onclick="switchTab('manual')">✏️ Manual</button>
-                    <button class="tab" onclick="switchTab('lista')">📋 Lista</button>
-                    <button class="tab" onclick="switchTab('exemplos')">💡 Exemplos</button>
+                <div class="info-box">
+                    <strong>💡 Como usar:</strong>
+                    Preencha os nomes e tamanhos de cada conjunto. Defina as interseções manualmente para controlar sobreposições.
                 </div>
 
-                <!-- TAB 1: ENTRADA MANUAL -->
-                <div id="tab-manual" class="tab-content active">
-                    <div class="info-box">
-                        <strong>💡 Como usar:</strong>
-                        Preencha os nomes e tamanhos de cada conjunto. As interseções são calculadas automaticamente baseadas nos valores fornecidos.
+                <div class="conjunto-card">
+                    <div class="form-group">
+                        <label>Nome do Conjunto A:</label>
+                        <input type="text" id="nameA" value="Clientes Mobile" placeholder="Ex: Clientes Mobile">
                     </div>
-
-                    <div class="conjunto-card">
-                        <div class="form-group">
-                            <label>Nome do Conjunto A:</label>
-                            <input type="text" id="nameA" value="Clientes Mobile" placeholder="Ex: Clientes Mobile">
-                        </div>
-                        <div class="form-group">
-                            <label>Tamanho do Conjunto A:</label>
-                            <input type="number" id="sizeA" value="150" min="0" placeholder="Ex: 150">
-                        </div>
-                        <div class="form-group">
-                            <label>Cor:</label>
-                            <div class="color-picker">
-                                <input type="color" id="colorA" value="#FF6B6B">
-                                <span id="colorA-hex">#FF6B6B</span>
-                            </div>
+                    <div class="form-group">
+                        <label>Tamanho do Conjunto A:</label>
+                        <input type="number" id="sizeA" value="150" min="0" placeholder="Ex: 150">
+                    </div>
+                    <div class="form-group">
+                        <label>Cor do Conjunto A:</label>
+                        <div class="color-picker">
+                            <input type="color" id="colorA" value="#fc4707">
+                            <span id="colorA-hex">#fc4707</span>
                         </div>
                     </div>
+                </div>
 
-                    <div class="conjunto-card">
-                        <div class="form-group">
-                            <label>Nome do Conjunto B:</label>
-                            <input type="text" id="nameB" value="Clientes Web" placeholder="Ex: Clientes Web">
-                        </div>
-                        <div class="form-group">
-                            <label>Tamanho do Conjunto B:</label>
-                            <input type="number" id="sizeB" value="200" min="0" placeholder="Ex: 200">
-                        </div>
-                        <div class="form-group">
-                            <label>Cor:</label>
-                            <div class="color-picker">
-                                <input type="color" id="colorB" value="#4ECDC4">
-                                <span id="colorB-hex">#4ECDC4</span>
-                            </div>
+                <div class="conjunto-card">
+                    <div class="form-group">
+                        <label>Nome do Conjunto B:</label>
+                        <input type="text" id="nameB" value="Clientes Web" placeholder="Ex: Clientes Web">
+                    </div>
+                    <div class="form-group">
+                        <label>Tamanho do Conjunto B:</label>
+                        <input type="number" id="sizeB" value="200" min="0" placeholder="Ex: 200">
+                    </div>
+                    <div class="form-group">
+                        <label>Cor do Conjunto B:</label>
+                        <div class="color-picker">
+                            <input type="color" id="colorB" value="#ff8533">
+                            <span id="colorB-hex">#ff8533</span>
                         </div>
                     </div>
+                </div>
 
-                    <div class="conjunto-card">
-                        <div class="form-group">
-                            <label>Nome do Conjunto C (opcional):</label>
-                            <input type="text" id="nameC" value="Newsletter" placeholder="Ex: Newsletter">
-                        </div>
-                        <div class="form-group">
-                            <label>Tamanho do Conjunto C:</label>
-                            <input type="number" id="sizeC" value="100" min="0" placeholder="Ex: 100">
-                        </div>
-                        <div class="form-group">
-                            <label>Cor:</label>
-                            <div class="color-picker">
-                                <input type="color" id="colorC" value="#45B7D1">
-                                <span id="colorC-hex">#45B7D1</span>
-                            </div>
+                <div class="conjunto-card">
+                    <div class="form-group">
+                        <label>Nome do Conjunto C (opcional):</label>
+                        <input type="text" id="nameC" value="Newsletter" placeholder="Ex: Newsletter">
+                    </div>
+                    <div class="form-group">
+                        <label>Tamanho do Conjunto C:</label>
+                        <input type="number" id="sizeC" value="100" min="0" placeholder="Ex: 100 (ou 0 para desabilitar)">
+                    </div>
+                    <div class="form-group">
+                        <label>Cor do Conjunto C:</label>
+                        <div class="color-picker">
+                            <input type="color" id="colorC" value="#ffaa66">
+                            <span id="colorC-hex">#ffaa66</span>
                         </div>
                     </div>
+                </div>
 
+                <div class="intersections-box">
+                    <label>⚙️ Interseções:</label>
+                    
                     <div class="form-group">
                         <label>Interseção A ∩ B:</label>
-                        <input type="number" id="intersectionAB" value="50" min="0" placeholder="Quantos estão em A E B?">
+                        <input type="number" id="intersectionAB" value="50" min="0" placeholder="Elementos em A e B">
                     </div>
 
                     <div class="form-group">
                         <label>Interseção A ∩ C:</label>
-                        <input type="number" id="intersectionAC" value="30" min="0" placeholder="Quantos estão em A E C?">
+                        <input type="number" id="intersectionAC" value="30" min="0" placeholder="Elementos em A e C">
                     </div>
 
                     <div class="form-group">
                         <label>Interseção B ∩ C:</label>
-                        <input type="number" id="intersectionBC" value="40" min="0" placeholder="Quantos estão em B E C?">
+                        <input type="number" id="intersectionBC" value="40" min="0" placeholder="Elementos em B e C">
                     </div>
 
                     <div class="form-group">
                         <label>Interseção A ∩ B ∩ C:</label>
-                        <input type="number" id="intersectionABC" value="20" min="0" placeholder="Quantos estão nos três?">
-                    </div>
-
-                    <button onclick="gerarDiagrama()">🎨 Gerar Diagrama</button>
-                    <button class="btn-secondary" onclick="limparFormulario()">🔄 Limpar</button>
-                </div>
-
-                <!-- TAB 2: ENTRADA POR LISTA -->
-                <div id="tab-lista" class="tab-content">
-                    <div class="info-box">
-                        <strong>💡 Formato:</strong>
-                        Cole listas de IDs separados por vírgula ou linha. O sistema calculará as interseções automaticamente.
-                    </div>
-
-                    <div class="form-group">
-                        <label>Nome do Conjunto A:</label>
-                        <input type="text" id="listNameA" value="Grupo A" placeholder="Nome do conjunto">
-                    </div>
-                    <div class="form-group">
-                        <label>IDs do Conjunto A (separados por vírgula ou linha):</label>
-                        <textarea id="listA" placeholder="1, 2, 3, 4, 5&#10;ou&#10;1&#10;2&#10;3">1,2,3,4,5,6,7,8</textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Nome do Conjunto B:</label>
-                        <input type="text" id="listNameB" value="Grupo B" placeholder="Nome do conjunto">
-                    </div>
-                    <div class="form-group">
-                        <label>IDs do Conjunto B:</label>
-                        <textarea id="listB" placeholder="3, 4, 5, 6, 7">3,4,5,6,7,8,9,10,11,12</textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Nome do Conjunto C (opcional):</label>
-                        <input type="text" id="listNameC" value="Grupo C" placeholder="Nome do conjunto">
-                    </div>
-                    <div class="form-group">
-                        <label>IDs do Conjunto C:</label>
-                        <textarea id="listC" placeholder="5, 6, 7, 8, 9">5,6,7,8,13,14,15</textarea>
-                    </div>
-
-                    <button onclick="gerarDeListas()">🎨 Gerar de Listas</button>
-                </div>
-
-                <!-- TAB 3: EXEMPLOS -->
-                <div id="tab-exemplos" class="tab-content">
-                    <h3 style="margin-bottom: 15px;">Exemplos Prontos</h3>
-                    
-                    <div class="examples">
-                        <button class="example-btn" onclick="carregarExemplo('marketing')">
-                            <strong>📱 Marketing Digital</strong><br>
-                            <small>Email, Social Media, Anúncios</small>
-                        </button>
-                        
-                        <button class="example-btn" onclick="carregarExemplo('produtos')">
-                            <strong>🛍️ Análise de Produtos</strong><br>
-                            <small>Categorias de produtos vendidos</small>
-                        </button>
-                        
-                        <button class="example-btn" onclick="carregarExemplo('clientes')">
-                            <strong>👥 Segmentação de Clientes</strong><br>
-                            <small>Premium, Regular, Ocasional</small>
-                        </button>
-                        
-                        <button class="example-btn" onclick="carregarExemplo('habilidades')">
-                            <strong>💼 Skills de Equipe</strong><br>
-                            <small>Frontend, Backend, DevOps</small>
-                        </button>
-
-                        <button class="example-btn" onclick="carregarExemplo('canais')">
-                            <strong>📺 Canais de Venda</strong><br>
-                            <small>Loja Física, E-commerce, App</small>
-                        </button>
-                    </div>
-
-                    <div class="info-box" style="margin-top: 20px;">
-                        Clique em um exemplo para carregar dados pré-configurados
+                        <input type="number" id="intersectionABC" value="20" min="0" placeholder="Elementos nos três">
                     </div>
                 </div>
+
+                <button onclick="gerarDiagrama()">🎨 Gerar Diagrama</button>
+                <button class="btn-secondary" onclick="limparFormulario()">🔄 Limpar Tudo</button>
 
                 <!-- Estatísticas -->
-                <div id="stats" class="stats-grid" style="display: none;"></div>
+                <div id="stats" class="stats-grid" style="display: none; margin-top: 20px;"></div>
             </div>
 
             <!-- PAINEL DIREITO: VISUALIZAÇÃO -->
             <div class="panel">
-                <h2>📊 Seu Diagrama</h2>
                 <div id="venn-container">
                     <div class="placeholder">
                         <svg viewBox="0 0 200 200">
-                            <circle cx="70" cy="100" r="60" fill="#667eea" opacity="0.3"/>
-                            <circle cx="130" cy="100" r="60" fill="#764ba2" opacity="0.3"/>
+                            <circle cx="70" cy="100" r="60" fill="#fc4707" opacity="0.3"/>
+                            <circle cx="130" cy="100" r="60" fill="#fc4707" opacity="0.3"/>
                         </svg>
-                        <p>Preencha os dados ao lado e clique em "Gerar Diagrama"</p>
+                        <p style="color: #dddddd;">Preencha os dados ao lado e clique em "Gerar Diagrama"</p>
                     </div>
                 </div>
-                
                 <button onclick="exportarSVG()" style="margin-top: 20px;">💾 Exportar como SVG</button>
                 <button onclick="exportarPNG()" style="margin-top: 10px;" class="btn-secondary">📸 Exportar como PNG</button>
             </div>
@@ -441,47 +350,6 @@
     </div>
 
     <script>
-        // ===== DIAGNÓSTICO DETALHADO =====
-        window.addEventListener('load', function() {
-        console.log('='.repeat(50));
-        console.log('DIAGNÓSTICO COMPLETO');
-        console.log('='.repeat(50));
-        
-        // 1. Verificar D3
-        console.log('1. D3.js:');
-        console.log('   typeof d3:', typeof d3);
-        console.log('   d3.version:', d3?.version);
-        console.log('   d3.select:', typeof d3?.select);
-        
-        // 2. Verificar venn
-        console.log('\n2. venn.js:');
-        console.log('   typeof venn:', typeof venn);
-        console.log('   typeof window.venn:', typeof window.venn);
-        
-        if (typeof venn === 'object') {
-            console.log('   Propriedades de venn:');
-            Object.keys(venn).forEach(key => {
-                console.log(`     - venn.${key}:`, typeof venn[key]);
-            });
-        }
-        
-        // 3. Teste rápido
-        console.log('\n3. Teste de criação:');
-        try {
-            if (typeof venn.VennDiagram === 'function') {
-                const testChart = venn.VennDiagram();
-                console.log('   ✅ venn.VennDiagram() criado com sucesso!');
-                console.log('   Tipo:', typeof testChart);
-            } else {
-                console.log('   ❌ venn.VennDiagram não é uma função');
-            }
-        } catch(e) {
-            console.error('   ❌ Erro ao criar:', e.message);
-        }
-        
-        console.log('='.repeat(50));
-    });
-        
         // Atualizar preview de cor
         ['A', 'B', 'C'].forEach(set => {
             const input = document.getElementById(`color${set}`);
@@ -490,19 +358,10 @@
             });
         });
 
-        // Trocar tabs
-        function switchTab(tabName) {
-            // Atualizar botões
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            // Atualizar conteúdo
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            document.getElementById(`tab-${tabName}`).classList.add('active');
-        }
-
         // Gerar diagrama
         function gerarDiagrama() {
+            console.log('🎨 Gerando diagrama...');
+            
             const nameA = document.getElementById('nameA').value || 'A';
             const nameB = document.getElementById('nameB').value || 'B';
             const nameC = document.getElementById('nameC').value || 'C';
@@ -523,7 +382,6 @@
             let data;
             
             if (sizeC > 0) {
-                // Três conjuntos
                 data = [
                     { sets: [nameA], size: sizeA, label: nameA },
                     { sets: [nameB], size: sizeB, label: nameB },
@@ -534,7 +392,6 @@
                     { sets: [nameA, nameB, nameC], size: intersectionABC }
                 ];
             } else {
-                // Dois conjuntos
                 data = [
                     { sets: [nameA], size: sizeA, label: nameA },
                     { sets: [nameB], size: sizeB, label: nameB },
@@ -546,252 +403,83 @@
             mostrarEstatisticas(data);
         }
 
-        // Gerar de listas
-        function gerarDeListas() {
-            const nameA = document.getElementById('listNameA').value || 'A';
-            const nameB = document.getElementById('listNameB').value || 'B';
-            const nameC = document.getElementById('listNameC').value || 'C';
-
-            // Processar listas
-            const listA = processarLista(document.getElementById('listA').value);
-            const listB = processarLista(document.getElementById('listB').value);
-            const listC = processarLista(document.getElementById('listC').value);
-
-            // Calcular interseções
-            const setA = new Set(listA);
-            const setB = new Set(listB);
-            const setC = new Set(listC);
-
-            const intersectionAB = new Set([...setA].filter(x => setB.has(x)));
-            const intersectionAC = new Set([...setA].filter(x => setC.has(x)));
-            const intersectionBC = new Set([...setB].filter(x => setC.has(x)));
-            const intersectionABC = new Set([...intersectionAB].filter(x => setC.has(x)));
-
-            let data;
+        // Renderizar Venn Diagram
+        function renderizarVenn(data, colors = ['#fc4707', '#ff8533', '#ffaa66']) {
+            console.log('📊 Iniciando renderização...');
             
-            if (listC.length > 0) {
-                data = [
-                    { sets: [nameA], size: setA.size, label: nameA },
-                    { sets: [nameB], size: setB.size, label: nameB },
-                    { sets: [nameC], size: setC.size, label: nameC },
-                    { sets: [nameA, nameB], size: intersectionAB.size },
-                    { sets: [nameA, nameC], size: intersectionAC.size },
-                    { sets: [nameB, nameC], size: intersectionBC.size },
-                    { sets: [nameA, nameB, nameC], size: intersectionABC.size }
-                ];
-            } else {
-                data = [
-                    { sets: [nameA], size: setA.size, label: nameA },
-                    { sets: [nameB], size: setB.size, label: nameB },
-                    { sets: [nameA, nameB], size: intersectionAB.size }
-                ];
-            }
+            try {
+                const container = document.getElementById('venn-container');
+                container.innerHTML = '<div id="venn"></div>';
 
-            renderizarVenn(data);
-            mostrarEstatisticas(data);
-        }
-
-        // Processar lista de IDs
-        function processarLista(texto) {
-            if (!texto.trim()) return [];
-            return texto
-                .split(/[\n,;]+/)
-                .map(x => x.trim())
-                .filter(x => x.length > 0);
-        }
-
-// Renderizar Venn Diagram (COM VALORES CORRETOS)
-function renderizarVenn(data, colors = ['#fc4707', '#ff8533', '#ffaa66']) {
-    console.log('📊 Iniciando renderização...');
-    
-    try {
-        const container = document.getElementById('venn-container');
-        container.innerHTML = '<div id="venn"></div>';
-
-        if (typeof venn === 'undefined' || typeof venn.VennDiagram !== 'function') {
-            throw new Error('venn.VennDiagram não encontrado');
-        }
-
-        const chart = venn.VennDiagram()
-            .width(900)
-            .height(650);
-
-        const svg = d3.select("#venn")
-            .datum(data)
-            .call(chart);
-
-        const colorScale = d3.scaleOrdinal()
-            .domain(data.filter(d => d.sets.length === 1).map(d => d.sets[0]))
-            .range(colors);
-
-        // Estilizar paths
-        svg.selectAll("path")
-            .style("fill", d => {
-                if (d.sets.length === 1) {
-                    return colorScale(d.sets[0]);
+                if (typeof venn === 'undefined' || typeof venn.VennDiagram !== 'function') {
+                    throw new Error('venn.VennDiagram não encontrado');
                 }
-                return colorScale(d.sets[0]);
-            })
-            .style("fill-opacity", 0.7)
-            .style("stroke", "#fc4707")
-            .style("stroke-width", 3);
 
-        // ===== MODIFICAÇÃO: EXIBIR VALORES CORRETOS =====
-        
-        // Remover textos padrão do venn.js
-        svg.selectAll("text").remove();
+                const chart = venn.VennDiagram()
+                    .width(900)
+                    .height(650);
 
-        // Calcular valores exclusivos de cada conjunto
-        const conjuntos = data.filter(d => d.sets.length === 1);
-        const numConjuntos = conjuntos.length;
+                const svg = d3.select("#venn")
+                    .datum(data)
+                    .call(chart);
 
-        // Função para calcular valor exclusivo (somente no conjunto, sem interseções)
-        function calcularExclusivo(nomeConjunto, data) {
-            const conjunto = data.find(d => d.sets.length === 1 && d.sets[0] === nomeConjunto);
-            if (!conjunto) return 0;
-            
-            let total = conjunto.size;
-            
-            // Subtrair todas as interseções que incluem este conjunto
-            data.forEach(item => {
-                if (item.sets.length > 1 && item.sets.includes(nomeConjunto)) {
-                    total -= item.size;
-                }
-            });
-            
-            return Math.max(0, total);
-        }
+                const colorScale = d3.scaleOrdinal()
+                    .domain(data.filter(d => d.sets.length === 1).map(d => d.sets[0]))
+                    .range(colors);
 
-        // Adicionar textos personalizados para cada área
-        svg.selectAll("g").each(function(d) {
-            const g = d3.select(this);
-            const circle = chart().circles ? chart().circles[d.sets[0]] : null;
-            
-            // Pegar coordenadas do centro (calculadas pelo venn.js)
-            const textCentres = chart().textCentres || {};
-            const centre = textCentres[d.sets] || d;
+                svg.selectAll("path")
+                    .style("fill", d => {
+                        if (d.sets.length === 1) {
+                            return colorScale(d.sets[0]);
+                        }
+                        return colorScale(d.sets[0]);
+                    })
+                    .style("fill-opacity", 0.7)
+                    .style("stroke", "#fc4707")
+                    .style("stroke-width", 3);
 
-            if (d.sets.length === 1) {
-                // CONJUNTO ÚNICO - Mostrar nome + valor exclusivo
-                const nomeConjunto = d.sets[0];
-                const valorExclusivo = calcularExclusivo(nomeConjunto, data);
-                
-                // Nome do conjunto
-                g.append("text")
-                    .attr("x", centre.x)
-                    .attr("y", centre.y - 15)
-                    .attr("text-anchor", "middle")
-                    .style("fill", "#ffffff")
-                    .style("font-size", "16px")
-                    .style("font-weight", "bold")
-                    .style("text-shadow", "2px 2px 6px rgba(0,0,0,0.9)")
-                    .text(d.label || nomeConjunto);
-                
-                // Valor exclusivo
-                g.append("text")
-                    .attr("x", centre.x)
-                    .attr("y", centre.y + 10)
-                    .attr("text-anchor", "middle")
+                svg.selectAll("text")
                     .style("fill", "#dddddd")
-                    .style("font-size", "24px")
-                    .style("font-weight", "bold")
-                    .style("text-shadow", "2px 2px 6px rgba(0,0,0,0.9)")
-                    .text(valorExclusivo.toLocaleString('pt-BR'));
-
-            } else if (d.sets.length === 2) {
-                // INTERSEÇÃO DE 2 CONJUNTOS
-                g.append("text")
-                    .attr("x", centre.x)
-                    .attr("y", centre.y + 5)
-                    .attr("text-anchor", "middle")
-                    .style("fill", "#ffffff")
-                    .style("font-size", "22px")
-                    .style("font-weight", "bold")
-                    .style("text-shadow", "2px 2px 6px rgba(0,0,0,0.9)")
-                    .text(d.size.toLocaleString('pt-BR'));
-
-            } else if (d.sets.length === 3) {
-                // INTERSEÇÃO DE 3 CONJUNTOS (centro)
-                g.append("text")
-                    .attr("x", centre.x)
-                    .attr("y", centre.y + 5)
-                    .attr("text-anchor", "middle")
-                    .style("fill", "#ffffff")
-                    .style("font-size", "20px")
-                    .style("font-weight", "bold")
-                    .style("text-shadow", "2px 2px 6px rgba(0,0,0,0.9)")
-                    .text(d.size.toLocaleString('pt-BR'));
-            }
-        });
-
-        // Hover effects
-        svg.selectAll("g")
-            .on("mouseover", function(event, d) {
-                d3.select(this).select("path")
-                    .transition()
-                    .duration(200)
-                    .style("fill-opacity", 0.9)
-                    .style("stroke-width", 4);
-                
-                // Mostrar tooltip com detalhes
-                const tooltip = svg.append("g")
-                    .attr("class", "tooltip")
-                    .attr("transform", `translate(${event.pageX}, ${event.pageY})`);
-                
-                const label = d.sets.join(' ∩ ');
-                tooltip.append("rect")
-                    .attr("fill", "#1a1a1a")
-                    .attr("stroke", "#fc4707")
-                    .attr("stroke-width", 2)
-                    .attr("rx", 5)
-                    .attr("width", 150)
-                    .attr("height", 50)
-                    .attr("x", -75)
-                    .attr("y", -60);
-                
-                tooltip.append("text")
-                    .attr("fill", "#dddddd")
-                    .attr("text-anchor", "middle")
-                    .attr("y", -40)
-                    .style("font-size", "12px")
-                    .text(label);
-                
-                tooltip.append("text")
-                    .attr("fill", "#fc4707")
-                    .attr("text-anchor", "middle")
-                    .attr("y", -22)
                     .style("font-size", "18px")
                     .style("font-weight", "bold")
-                    .text(d.size.toLocaleString('pt-BR'));
-            })
-            .on("mouseout", function() {
-                d3.select(this).select("path")
-                    .transition()
-                    .duration(200)
-                    .style("fill-opacity", 0.7)
-                    .style("stroke-width", 3);
-                
-                svg.selectAll(".tooltip").remove();
-            });
+                    .style("text-shadow", "2px 2px 6px rgba(0,0,0,0.9)");
 
-        console.log('✅ Diagrama renderizado!');
+                svg.selectAll("g")
+                    .on("mouseover", function() {
+                        d3.select(this).select("path")
+                            .transition()
+                            .duration(200)
+                            .style("fill-opacity", 0.9)
+                            .style("stroke-width", 4);
+                    })
+                    .on("mouseout", function() {
+                        d3.select(this).select("path")
+                            .transition()
+                            .duration(200)
+                            .style("fill-opacity", 0.7)
+                            .style("stroke-width", 3);
+                    });
 
-    } catch (error) {
-        console.error('❌ Erro:', error);
-        document.getElementById('venn-container').innerHTML = `
-            <div style="background: rgba(255,0,0,0.1); color: #fc4707; padding: 30px; border-radius: 12px; text-align: center; border: 2px solid #fc4707;">
-                <h3>❌ Erro ao gerar diagrama</h3>
-                <p style="color: #dddddd; margin-top: 10px;">${error.message}</p>
-            </div>
-        `;
-    }
-}        
+                console.log('✅ Diagrama renderizado!');
+
+            } catch (error) {
+                console.error('❌ Erro:', error);
+                document.getElementById('venn-container').innerHTML = `
+                    <div style="background: rgba(255,0,0,0.1); color: #fc4707; padding: 30px; border-radius: 12px; text-align: center; border: 2px solid #fc4707;">
+                        <h3>❌ Erro ao gerar diagrama</h3>
+                        <p style="color: #dddddd; margin-top: 10px;">${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
         // Mostrar estatísticas
         function mostrarEstatisticas(data) {
             const statsDiv = document.getElementById('stats');
             statsDiv.style.display = 'grid';
             
-            let html = '';
+            let html = '<div style="grid-column: 1 / -1; margin-bottom: 10px;"><strong style="color: #fc4707; font-size: 15px;">📊 Estatísticas:</strong></div>';
+            
             data.forEach(item => {
                 const label = item.sets.join(' ∩ ');
                 html += `
@@ -805,126 +493,34 @@ function renderizarVenn(data, colors = ['#fc4707', '#ff8533', '#ffaa66']) {
             statsDiv.innerHTML = html;
         }
 
-        // Carregar exemplos
-        function carregarExemplo(tipo) {
-            const exemplos = {
-                marketing: {
-                    nameA: 'Email Marketing',
-                    sizeA: 5000,
-                    colorA: '#FF6B6B',
-                    nameB: 'Social Media',
-                    sizeB: 8000,
-                    colorB: '#4ECDC4',
-                    nameC: 'Anúncios Pagos',
-                    sizeC: 3000,
-                    colorC: '#45B7D1',
-                    intersectionAB: 1500,
-                    intersectionAC: 800,
-                    intersectionBC: 1000,
-                    intersectionABC: 400
-                },
-                produtos: {
-                    nameA: 'Eletrônicos',
-                    sizeA: 450,
-                    colorA: '#9B59B6',
-                    nameB: 'Casa & Decoração',
-                    sizeB: 620,
-                    colorB: '#3498DB',
-                    nameC: 'Moda',
-                    sizeC: 780,
-                    colorC: '#E74C3C',
-                    intersectionAB: 120,
-                    intersectionAC: 90,
-                    intersectionBC: 150,
-                    intersectionABC: 45
-                },
-                clientes: {
-                    nameA: 'Premium',
-                    sizeA: 250,
-                    colorA: '#F39C12',
-                    nameB: 'Regular',
-                    sizeB: 1500,
-                    colorB: '#2ECC71',
-                    nameC: 'Ocasional',
-                    sizeC: 3000,
-                    colorC: '#95A5A6',
-                    intersectionAB: 80,
-                    intersectionAC: 30,
-                    intersectionBC: 200,
-                    intersectionABC: 15
-                },
-                habilidades: {
-                    nameA: 'Frontend',
-                    sizeA: 25,
-                    colorA: '#E67E22',
-                    nameB: 'Backend',
-                    sizeB: 30,
-                    colorB: '#16A085',
-                    nameC: 'DevOps',
-                    sizeC: 15,
-                    colorC: '#2C3E50',
-                    intersectionAB: 8,
-                    intersectionAC: 5,
-                    intersectionBC: 6,
-                    intersectionABC: 3
-                },
-                canais: {
-                    nameA: 'Loja Física',
-                    sizeA: 12000,
-                    colorA: '#E74C3C',
-                    nameB: 'E-commerce',
-                    sizeB: 18000,
-                    colorB: '#3498DB',
-                    nameC: 'App Mobile',
-                    sizeC: 8000,
-                    colorC: '#9B59B6',
-                    intersectionAB: 4000,
-                    intersectionAC: 2000,
-                    intersectionBC: 3000,
-                    intersectionABC: 1000
-                }
-            };
-
-            const exemplo = exemplos[tipo];
-            if (exemplo) {
-                Object.keys(exemplo).forEach(key => {
-                    const el = document.getElementById(key);
-                    if (el) el.value = exemplo[key];
-                });
-                
-                // Atualizar preview de cores
-                ['A', 'B', 'C'].forEach(set => {
-                    document.getElementById(`color${set}-hex`).textContent = exemplo[`color${set}`];
-                });
-
-                switchTab('manual');
-                document.querySelector('.tab').click();
-                
-                // Gerar automaticamente
-                setTimeout(gerarDiagrama, 300);
-            }
-        }
-
         // Limpar formulário
         function limparFormulario() {
-            document.getElementById('nameA').value = '';
-            document.getElementById('nameB').value = '';
-            document.getElementById('nameC').value = '';
-            document.getElementById('sizeA').value = '';
-            document.getElementById('sizeB').value = '';
-            document.getElementById('sizeC').value = '';
-            document.getElementById('intersectionAB').value = '';
-            document.getElementById('intersectionAC').value = '';
-            document.getElementById('intersectionBC').value = '';
-            document.getElementById('intersectionABC').value = '';
+            document.getElementById('nameA').value = 'Conjunto A';
+            document.getElementById('nameB').value = 'Conjunto B';
+            document.getElementById('nameC').value = 'Conjunto C';
+            
+            document.getElementById('sizeA').value = '100';
+            document.getElementById('sizeB').value = '100';
+            document.getElementById('sizeC').value = '0';
+            document.getElementById('intersectionAB').value = '30';
+            document.getElementById('intersectionAC').value = '0';
+            document.getElementById('intersectionBC').value = '0';
+            document.getElementById('intersectionABC').value = '0';
+            
+            document.getElementById('colorA').value = '#fc4707';
+            document.getElementById('colorB').value = '#ff8533';
+            document.getElementById('colorC').value = '#ffaa66';
+            document.getElementById('colorA-hex').textContent = '#fc4707';
+            document.getElementById('colorB-hex').textContent = '#ff8533';
+            document.getElementById('colorC-hex').textContent = '#ffaa66';
             
             document.getElementById('venn-container').innerHTML = `
                 <div class="placeholder">
                     <svg viewBox="0 0 200 200">
-                        <circle cx="70" cy="100" r="60" fill="#667eea" opacity="0.3"/>
-                        <circle cx="130" cy="100" r="60" fill="#764ba2" opacity="0.3"/>
+                        <circle cx="70" cy="100" r="60" fill="#fc4707" opacity="0.3"/>
+                        <circle cx="130" cy="100" r="60" fill="#fc4707" opacity="0.3"/>
                     </svg>
-                    <p>Preencha os dados ao lado e clique em "Gerar Diagrama"</p>
+                    <p style="color: #dddddd;">Preencha os dados ao lado e clique em "Gerar Diagrama"</p>
                 </div>
             `;
             
@@ -935,7 +531,7 @@ function renderizarVenn(data, colors = ['#fc4707', '#ff8533', '#ffaa66']) {
         function exportarSVG() {
             const svgElement = document.querySelector('#venn svg');
             if (!svgElement) {
-                alert('Gere um diagrama primeiro!');
+                alert('⚠️ Gere um diagrama primeiro!');
                 return;
             }
 
@@ -946,17 +542,18 @@ function renderizarVenn(data, colors = ['#fc4707', '#ff8533', '#ffaa66']) {
             
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'venn-diagram.svg';
+            a.download = `venn-diagram-${Date.now()}.svg`;
             a.click();
             
             URL.revokeObjectURL(url);
+            alert('✅ SVG exportado com sucesso!');
         }
 
         // Exportar PNG
         function exportarPNG() {
             const svgElement = document.querySelector('#venn svg');
             if (!svgElement) {
-                alert('Gere um diagrama primeiro!');
+                alert('⚠️ Gere um diagrama primeiro!');
                 return;
             }
 
@@ -971,7 +568,8 @@ function renderizarVenn(data, colors = ['#fc4707', '#ff8533', '#ffaa66']) {
             img.onload = function() {
                 canvas.width = img.width * 2;
                 canvas.height = img.height * 2;
-                ctx.fillStyle = 'white';
+                
+                ctx.fillStyle = '#000000';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                 
@@ -979,9 +577,10 @@ function renderizarVenn(data, colors = ['#fc4707', '#ff8533', '#ffaa66']) {
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = 'venn-diagram.png';
+                    a.download = `venn-diagram-${Date.now()}.png`;
                     a.click();
                     URL.revokeObjectURL(url);
+                    alert('✅ PNG exportado com sucesso!');
                 });
                 
                 URL.revokeObjectURL(url);
@@ -990,9 +589,12 @@ function renderizarVenn(data, colors = ['#fc4707', '#ff8533', '#ffaa66']) {
             img.src = url;
         }
 
-        // Carregar exemplo inicial
+        // Gerar diagrama ao carregar
         window.addEventListener('load', () => {
-            carregarExemplo('marketing');
+            console.log('✅ Página carregada');
+            setTimeout(() => {
+                gerarDiagrama();
+            }, 500);
         });
     </script>
 </body>
