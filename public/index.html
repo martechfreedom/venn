@@ -441,6 +441,47 @@
     </div>
 
     <script>
+        // ===== DIAGNÓSTICO DETALHADO =====
+        window.addEventListener('load', function() {
+        console.log('='.repeat(50));
+        console.log('DIAGNÓSTICO COMPLETO');
+        console.log('='.repeat(50));
+        
+        // 1. Verificar D3
+        console.log('1. D3.js:');
+        console.log('   typeof d3:', typeof d3);
+        console.log('   d3.version:', d3?.version);
+        console.log('   d3.select:', typeof d3?.select);
+        
+        // 2. Verificar venn
+        console.log('\n2. venn.js:');
+        console.log('   typeof venn:', typeof venn);
+        console.log('   typeof window.venn:', typeof window.venn);
+        
+        if (typeof venn === 'object') {
+            console.log('   Propriedades de venn:');
+            Object.keys(venn).forEach(key => {
+                console.log(`     - venn.${key}:`, typeof venn[key]);
+            });
+        }
+        
+        // 3. Teste rápido
+        console.log('\n3. Teste de criação:');
+        try {
+            if (typeof venn.VennDiagram === 'function') {
+                const testChart = venn.VennDiagram();
+                console.log('   ✅ venn.VennDiagram() criado com sucesso!');
+                console.log('   Tipo:', typeof testChart);
+            } else {
+                console.log('   ❌ venn.VennDiagram não é uma função');
+            }
+        } catch(e) {
+            console.error('   ❌ Erro ao criar:', e.message);
+        }
+        
+        console.log('='.repeat(50));
+    });
+        
         // Atualizar preview de cor
         ['A', 'B', 'C'].forEach(set => {
             const input = document.getElementById(`color${set}`);
@@ -559,57 +600,107 @@
                 .filter(x => x.length > 0);
         }
 
-        // Renderizar Venn Diagram
-        function renderizarVenn(data, colors = ['#FF6B6B', '#4ECDC4', '#45B7D1']) {
-            const container = document.getElementById('venn-container');
-            container.innerHTML = '<div id="venn"></div>';
+// Renderizar Venn Diagram (VERSÃO COMPATÍVEL COM UMD)
+function renderizarVenn(data, colors = ['#FF6B6B', '#4ECDC4', '#45B7D1']) {
+    console.log('📊 Iniciando renderização...');
+    console.log('Dados:', data);
+    
+    try {
+        const container = document.getElementById('venn-container');
+        container.innerHTML = '<div id="venn"></div>';
 
-            const chart = venn.VennDiagram()
-                .width(800)
-                .height(600);
-
-            const selection = d3.select("#venn")
-                .datum(data)
-                .call(chart);
-
-            // Aplicar cores
-            const colorScale = d3.scaleOrdinal()
-                .domain(data.filter(d => d.sets.length === 1).map(d => d.sets[0]))
-                .range(colors);
-
-            selection.selectAll("path")
-                .style("fill", d => {
-                    if (d.sets.length === 1) {
-                        return colorScale(d.sets[0]);
-                    }
-                    return colorScale(d.sets[0]);
-                })
-                .style("fill-opacity", 0.6)
-                .style("stroke", "white")
-                .style("stroke-width", 3);
-
-            selection.selectAll("text")
-                .style("fill", "white")
-                .style("font-size", "16px")
-                .style("font-weight", "bold")
-                .style("text-shadow", "2px 2px 4px rgba(0,0,0,0.7)");
-
-            // Hover effects
-            selection.selectAll("g")
-                .on("mouseover", function() {
-                    d3.select(this).select("path")
-                        .transition()
-                        .duration(200)
-                        .style("fill-opacity", 0.8);
-                })
-                .on("mouseout", function() {
-                    d3.select(this).select("path")
-                        .transition()
-                        .duration(200)
-                        .style("fill-opacity", 0.6);
-                });
+        // CORREÇÃO: Verificar múltiplas formas de acesso à biblioteca
+        let VennDiagramFunc;
+        
+        if (typeof venn !== 'undefined' && typeof venn.VennDiagram === 'function') {
+            VennDiagramFunc = venn.VennDiagram;
+            console.log('✅ Usando venn.VennDiagram');
+        } else if (typeof window.venn !== 'undefined' && typeof window.venn.VennDiagram === 'function') {
+            VennDiagramFunc = window.venn.VennDiagram;
+            console.log('✅ Usando window.venn.VennDiagram');
+        } else {
+            throw new Error('venn.VennDiagram não encontrado. Verifique se /build/venn.js carregou corretamente.');
         }
 
+        // Criar chart
+        const chart = VennDiagramFunc()
+            .width(800)
+            .height(600);
+
+        console.log('Chart criado:', typeof chart);
+
+        // Renderizar
+        const svg = d3.select("#venn")
+            .datum(data)
+            .call(chart);
+
+        console.log('SVG renderizado');
+
+        // Aplicar cores customizadas
+        const colorScale = d3.scaleOrdinal()
+            .domain(data.filter(d => d.sets.length === 1).map(d => d.sets[0]))
+            .range(colors);
+
+        // Estilizar paths
+        svg.selectAll("path")
+            .style("fill", d => {
+                if (d.sets.length === 1) {
+                    return colorScale(d.sets[0]);
+                }
+                return colorScale(d.sets[0]);
+            })
+            .style("fill-opacity", 0.6)
+            .style("stroke", "white")
+            .style("stroke-width", 3);
+
+        // Estilizar textos
+        svg.selectAll("text")
+            .style("fill", "white")
+            .style("font-size", "16px")
+            .style("font-weight", "bold")
+            .style("text-shadow", "2px 2px 4px rgba(0,0,0,0.7)");
+
+        // Hover effects
+        svg.selectAll("g")
+            .on("mouseover", function() {
+                d3.select(this).select("path")
+                    .transition()
+                    .duration(200)
+                    .style("fill-opacity", 0.8);
+            })
+            .on("mouseout", function() {
+                d3.select(this).select("path")
+                    .transition()
+                    .duration(200)
+                    .style("fill-opacity", 0.6);
+            });
+
+        console.log('✅ Diagrama renderizado com sucesso!');
+
+    } catch (error) {
+        console.error('❌ Erro em renderizarVenn:', error);
+        console.error('Stack:', error.stack);
+        
+        // Mostrar erro visualmente
+        document.getElementById('venn-container').innerHTML = `
+            <div style="background: #fee; color: #c00; padding: 30px; border-radius: 12px; text-align: center;">
+                <h3>❌ Erro ao gerar diagrama</h3>
+                <p><strong>Mensagem:</strong> ${error.message}</p>
+                <p><small>Verifique o console (F12) para mais detalhes.</small></p>
+                <hr style="margin: 20px 0;">
+                <p><strong>Debug:</strong></p>
+                <pre style="text-align: left; background: #f5f5f5; padding: 10px; overflow: auto;">
+venn disponível: ${typeof venn}
+venn.VennDiagram: ${typeof venn?.VennDiagram}
+window.venn: ${typeof window.venn}
+Métodos em venn: ${typeof venn === 'object' ? Object.keys(venn).join(', ') : 'N/A'}
+                </pre>
+            </div>
+        `;
+        
+        throw error;
+    }
+}
         // Mostrar estatísticas
         function mostrarEstatisticas(data) {
             const statsDiv = document.getElementById('stats');
