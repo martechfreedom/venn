@@ -3,230 +3,821 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Venn Diagram - BigQuery</title>
+    <title>Venn Diagram - Gerador Personalizado</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/venn.js@0.2.20/venn.min.js"></script>
+    <script src="/build/venn.js"></script>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             padding: 20px;
-            background: #f5f5f5;
         }
         .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 1024px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+        .panel {
             background: white;
-            border-radius: 8px;
+            border-radius: 16px;
             padding: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
-        h1 {
+        .panel h2 {
             color: #333;
-            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
         }
-        .controls {
-            margin: 20px 0;
-            text-align: center;
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: monospace;
+        }
+        .conjunto-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+        .conjunto-card:nth-child(2) {
+            border-left-color: #f093fb;
+        }
+        .conjunto-card:nth-child(3) {
+            border-left-color: #4facfe;
         }
         button {
-            background: #4285f4;
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 16px;
             font-size: 16px;
-            border-radius: 4px;
+            font-weight: 600;
+            border-radius: 8px;
             cursor: pointer;
-            margin: 0 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            margin-top: 10px;
         }
         button:hover {
-            background: #357ae8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
         }
-        button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
+        button:active {
+            transform: translateY(0);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+        }
+        .btn-secondary:hover {
+            box-shadow: 0 6px 20px rgba(240, 147, 251, 0.6);
+        }
+        #venn-container {
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         #venn {
+            width: 100%;
+        }
+        .placeholder {
             text-align: center;
-            margin: 30px 0;
+            color: #999;
+            padding: 100px 20px;
         }
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
+        .placeholder svg {
+            width: 200px;
+            height: 200px;
+            opacity: 0.3;
+            margin-bottom: 20px;
         }
-        .stat-card {
-            background: #f8f9fa;
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
             padding: 15px;
-            border-radius: 4px;
-            border-left: 4px solid #4285f4;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #1976d2;
+        }
+        .info-box strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab {
+            flex: 1;
+            padding: 12px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .color-picker {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        input[type="color"] {
+            width: 50px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .examples {
+            display: grid;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .example-btn {
+            padding: 12px;
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s;
+            font-size: 13px;
+        }
+        .example-btn:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+            font-size: 13px;
+        }
+        .stat-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
         }
         .stat-label {
             color: #666;
-            font-size: 14px;
+            font-weight: 600;
         }
         .stat-value {
             color: #333;
-            font-size: 24px;
+            font-size: 18px;
             font-weight: bold;
-        }
-        .loading {
-            text-align: center;
-            color: #666;
-            padding: 20px;
-        }
-        .error {
-            background: #fee;
-            color: #c00;
-            padding: 15px;
-            border-radius: 4px;
-            margin: 20px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📊 Venn Diagram - BigQuery Analysis</h1>
-        
-        <div class="controls">
-            <button onclick="carregarDados()">Buscar Dados Reais</button>
-            <button onclick="carregarMock()">Dados de Exemplo</button>
+        <div class="header">
+            <h1>📊 Gerador de Venn Diagram</h1>
+            <p>Crie diagramas personalizados com seus próprios dados</p>
         </div>
 
-        <div id="loading" class="loading" style="display: none;">
-            ⏳ Carregando dados do BigQuery...
+        <div class="content">
+            <!-- PAINEL ESQUERDO: FORMULÁRIO -->
+            <div class="panel">
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('manual')">✏️ Manual</button>
+                    <button class="tab" onclick="switchTab('lista')">📋 Lista</button>
+                    <button class="tab" onclick="switchTab('exemplos')">💡 Exemplos</button>
+                </div>
+
+                <!-- TAB 1: ENTRADA MANUAL -->
+                <div id="tab-manual" class="tab-content active">
+                    <div class="info-box">
+                        <strong>💡 Como usar:</strong>
+                        Preencha os nomes e tamanhos de cada conjunto. As interseções são calculadas automaticamente baseadas nos valores fornecidos.
+                    </div>
+
+                    <div class="conjunto-card">
+                        <div class="form-group">
+                            <label>Nome do Conjunto A:</label>
+                            <input type="text" id="nameA" value="Clientes Mobile" placeholder="Ex: Clientes Mobile">
+                        </div>
+                        <div class="form-group">
+                            <label>Tamanho do Conjunto A:</label>
+                            <input type="number" id="sizeA" value="150" min="0" placeholder="Ex: 150">
+                        </div>
+                        <div class="form-group">
+                            <label>Cor:</label>
+                            <div class="color-picker">
+                                <input type="color" id="colorA" value="#FF6B6B">
+                                <span id="colorA-hex">#FF6B6B</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="conjunto-card">
+                        <div class="form-group">
+                            <label>Nome do Conjunto B:</label>
+                            <input type="text" id="nameB" value="Clientes Web" placeholder="Ex: Clientes Web">
+                        </div>
+                        <div class="form-group">
+                            <label>Tamanho do Conjunto B:</label>
+                            <input type="number" id="sizeB" value="200" min="0" placeholder="Ex: 200">
+                        </div>
+                        <div class="form-group">
+                            <label>Cor:</label>
+                            <div class="color-picker">
+                                <input type="color" id="colorB" value="#4ECDC4">
+                                <span id="colorB-hex">#4ECDC4</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="conjunto-card">
+                        <div class="form-group">
+                            <label>Nome do Conjunto C (opcional):</label>
+                            <input type="text" id="nameC" value="Newsletter" placeholder="Ex: Newsletter">
+                        </div>
+                        <div class="form-group">
+                            <label>Tamanho do Conjunto C:</label>
+                            <input type="number" id="sizeC" value="100" min="0" placeholder="Ex: 100">
+                        </div>
+                        <div class="form-group">
+                            <label>Cor:</label>
+                            <div class="color-picker">
+                                <input type="color" id="colorC" value="#45B7D1">
+                                <span id="colorC-hex">#45B7D1</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Interseção A ∩ B:</label>
+                        <input type="number" id="intersectionAB" value="50" min="0" placeholder="Quantos estão em A E B?">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Interseção A ∩ C:</label>
+                        <input type="number" id="intersectionAC" value="30" min="0" placeholder="Quantos estão em A E C?">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Interseção B ∩ C:</label>
+                        <input type="number" id="intersectionBC" value="40" min="0" placeholder="Quantos estão em B E C?">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Interseção A ∩ B ∩ C:</label>
+                        <input type="number" id="intersectionABC" value="20" min="0" placeholder="Quantos estão nos três?">
+                    </div>
+
+                    <button onclick="gerarDiagrama()">🎨 Gerar Diagrama</button>
+                    <button class="btn-secondary" onclick="limparFormulario()">🔄 Limpar</button>
+                </div>
+
+                <!-- TAB 2: ENTRADA POR LISTA -->
+                <div id="tab-lista" class="tab-content">
+                    <div class="info-box">
+                        <strong>💡 Formato:</strong>
+                        Cole listas de IDs separados por vírgula ou linha. O sistema calculará as interseções automaticamente.
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nome do Conjunto A:</label>
+                        <input type="text" id="listNameA" value="Grupo A" placeholder="Nome do conjunto">
+                    </div>
+                    <div class="form-group">
+                        <label>IDs do Conjunto A (separados por vírgula ou linha):</label>
+                        <textarea id="listA" placeholder="1, 2, 3, 4, 5&#10;ou&#10;1&#10;2&#10;3">1,2,3,4,5,6,7,8</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nome do Conjunto B:</label>
+                        <input type="text" id="listNameB" value="Grupo B" placeholder="Nome do conjunto">
+                    </div>
+                    <div class="form-group">
+                        <label>IDs do Conjunto B:</label>
+                        <textarea id="listB" placeholder="3, 4, 5, 6, 7">3,4,5,6,7,8,9,10,11,12</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nome do Conjunto C (opcional):</label>
+                        <input type="text" id="listNameC" value="Grupo C" placeholder="Nome do conjunto">
+                    </div>
+                    <div class="form-group">
+                        <label>IDs do Conjunto C:</label>
+                        <textarea id="listC" placeholder="5, 6, 7, 8, 9">5,6,7,8,13,14,15</textarea>
+                    </div>
+
+                    <button onclick="gerarDeListas()">🎨 Gerar de Listas</button>
+                </div>
+
+                <!-- TAB 3: EXEMPLOS -->
+                <div id="tab-exemplos" class="tab-content">
+                    <h3 style="margin-bottom: 15px;">Exemplos Prontos</h3>
+                    
+                    <div class="examples">
+                        <button class="example-btn" onclick="carregarExemplo('marketing')">
+                            <strong>📱 Marketing Digital</strong><br>
+                            <small>Email, Social Media, Anúncios</small>
+                        </button>
+                        
+                        <button class="example-btn" onclick="carregarExemplo('produtos')">
+                            <strong>🛍️ Análise de Produtos</strong><br>
+                            <small>Categorias de produtos vendidos</small>
+                        </button>
+                        
+                        <button class="example-btn" onclick="carregarExemplo('clientes')">
+                            <strong>👥 Segmentação de Clientes</strong><br>
+                            <small>Premium, Regular, Ocasional</small>
+                        </button>
+                        
+                        <button class="example-btn" onclick="carregarExemplo('habilidades')">
+                            <strong>💼 Skills de Equipe</strong><br>
+                            <small>Frontend, Backend, DevOps</small>
+                        </button>
+
+                        <button class="example-btn" onclick="carregarExemplo('canais')">
+                            <strong>📺 Canais de Venda</strong><br>
+                            <small>Loja Física, E-commerce, App</small>
+                        </button>
+                    </div>
+
+                    <div class="info-box" style="margin-top: 20px;">
+                        Clique em um exemplo para carregar dados pré-configurados
+                    </div>
+                </div>
+
+                <!-- Estatísticas -->
+                <div id="stats" class="stats-grid" style="display: none;"></div>
+            </div>
+
+            <!-- PAINEL DIREITO: VISUALIZAÇÃO -->
+            <div class="panel">
+                <h2>📊 Seu Diagrama</h2>
+                <div id="venn-container">
+                    <div class="placeholder">
+                        <svg viewBox="0 0 200 200">
+                            <circle cx="70" cy="100" r="60" fill="#667eea" opacity="0.3"/>
+                            <circle cx="130" cy="100" r="60" fill="#764ba2" opacity="0.3"/>
+                        </svg>
+                        <p>Preencha os dados ao lado e clique em "Gerar Diagrama"</p>
+                    </div>
+                </div>
+                
+                <button onclick="exportarSVG()" style="margin-top: 20px;">💾 Exportar como SVG</button>
+                <button onclick="exportarPNG()" style="margin-top: 10px;" class="btn-secondary">📸 Exportar como PNG</button>
+            </div>
         </div>
-
-        <div id="error" class="error" style="display: none;"></div>
-
-        <div id="venn"></div>
-
-        <div id="stats" class="stats"></div>
     </div>
 
     <script>
-        // Configuração
-        const API_BASE = window.location.origin;
+        // Atualizar preview de cor
+        ['A', 'B', 'C'].forEach(set => {
+            const input = document.getElementById(`color${set}`);
+            input.addEventListener('input', (e) => {
+                document.getElementById(`color${set}-hex`).textContent = e.target.value;
+            });
+        });
 
-        // Carregar dados reais do BigQuery
-        async function carregarDados() {
-            mostrarLoading(true);
-            limparErro();
-
-            try {
-                const response = await fetch(`${API_BASE}/api/venn-data`);
-                const result = await response.json();
-
-                if (!result.success) {
-                    throw new Error(result.error);
-                }
-
-                renderizarVenn(result.data);
-                mostrarEstatisticas(result.metadata);
-
-            } catch (error) {
-                mostrarErro(`Erro ao buscar dados: ${error.message}`);
-            } finally {
-                mostrarLoading(false);
-            }
+        // Trocar tabs
+        function switchTab(tabName) {
+            // Atualizar botões
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Atualizar conteúdo
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`tab-${tabName}`).classList.add('active');
         }
 
-        // Carregar dados mockados (para teste)
-        async function carregarMock() {
-            mostrarLoading(true);
-            limparErro();
+        // Gerar diagrama
+        function gerarDiagrama() {
+            const nameA = document.getElementById('nameA').value || 'A';
+            const nameB = document.getElementById('nameB').value || 'B';
+            const nameC = document.getElementById('nameC').value || 'C';
+            
+            const sizeA = parseInt(document.getElementById('sizeA').value) || 0;
+            const sizeB = parseInt(document.getElementById('sizeB').value) || 0;
+            const sizeC = parseInt(document.getElementById('sizeC').value) || 0;
+            
+            const intersectionAB = parseInt(document.getElementById('intersectionAB').value) || 0;
+            const intersectionAC = parseInt(document.getElementById('intersectionAC').value) || 0;
+            const intersectionBC = parseInt(document.getElementById('intersectionBC').value) || 0;
+            const intersectionABC = parseInt(document.getElementById('intersectionABC').value) || 0;
 
-            try {
-                const response = await fetch(`${API_BASE}/api/venn-data/mock`);
-                const result = await response.json();
+            const colorA = document.getElementById('colorA').value;
+            const colorB = document.getElementById('colorB').value;
+            const colorC = document.getElementById('colorC').value;
 
-                renderizarVenn(result.data);
-                mostrarEstatisticas(result.metadata);
-
-            } catch (error) {
-                mostrarErro(`Erro: ${error.message}`);
-            } finally {
-                mostrarLoading(false);
+            let data;
+            
+            if (sizeC > 0) {
+                // Três conjuntos
+                data = [
+                    { sets: [nameA], size: sizeA, label: nameA },
+                    { sets: [nameB], size: sizeB, label: nameB },
+                    { sets: [nameC], size: sizeC, label: nameC },
+                    { sets: [nameA, nameB], size: intersectionAB },
+                    { sets: [nameA, nameC], size: intersectionAC },
+                    { sets: [nameB, nameC], size: intersectionBC },
+                    { sets: [nameA, nameB, nameC], size: intersectionABC }
+                ];
+            } else {
+                // Dois conjuntos
+                data = [
+                    { sets: [nameA], size: sizeA, label: nameA },
+                    { sets: [nameB], size: sizeB, label: nameB },
+                    { sets: [nameA, nameB], size: intersectionAB }
+                ];
             }
+
+            renderizarVenn(data, [colorA, colorB, colorC]);
+            mostrarEstatisticas(data);
         }
 
-        // Renderizar diagrama de Venn
-        function renderizarVenn(data) {
-            const div = document.getElementById('venn');
-            div.innerHTML = ''; // Limpar
+        // Gerar de listas
+        function gerarDeListas() {
+            const nameA = document.getElementById('listNameA').value || 'A';
+            const nameB = document.getElementById('listNameB').value || 'B';
+            const nameC = document.getElementById('listNameC').value || 'C';
+
+            // Processar listas
+            const listA = processarLista(document.getElementById('listA').value);
+            const listB = processarLista(document.getElementById('listB').value);
+            const listC = processarLista(document.getElementById('listC').value);
+
+            // Calcular interseções
+            const setA = new Set(listA);
+            const setB = new Set(listB);
+            const setC = new Set(listC);
+
+            const intersectionAB = new Set([...setA].filter(x => setB.has(x)));
+            const intersectionAC = new Set([...setA].filter(x => setC.has(x)));
+            const intersectionBC = new Set([...setB].filter(x => setC.has(x)));
+            const intersectionABC = new Set([...intersectionAB].filter(x => setC.has(x)));
+
+            let data;
+            
+            if (listC.length > 0) {
+                data = [
+                    { sets: [nameA], size: setA.size, label: nameA },
+                    { sets: [nameB], size: setB.size, label: nameB },
+                    { sets: [nameC], size: setC.size, label: nameC },
+                    { sets: [nameA, nameB], size: intersectionAB.size },
+                    { sets: [nameA, nameC], size: intersectionAC.size },
+                    { sets: [nameB, nameC], size: intersectionBC.size },
+                    { sets: [nameA, nameB, nameC], size: intersectionABC.size }
+                ];
+            } else {
+                data = [
+                    { sets: [nameA], size: setA.size, label: nameA },
+                    { sets: [nameB], size: setB.size, label: nameB },
+                    { sets: [nameA, nameB], size: intersectionAB.size }
+                ];
+            }
+
+            renderizarVenn(data);
+            mostrarEstatisticas(data);
+        }
+
+        // Processar lista de IDs
+        function processarLista(texto) {
+            if (!texto.trim()) return [];
+            return texto
+                .split(/[\n,;]+/)
+                .map(x => x.trim())
+                .filter(x => x.length > 0);
+        }
+
+        // Renderizar Venn Diagram
+        function renderizarVenn(data, colors = ['#FF6B6B', '#4ECDC4', '#45B7D1']) {
+            const container = document.getElementById('venn-container');
+            container.innerHTML = '<div id="venn"></div>';
 
             const chart = venn.VennDiagram()
                 .width(800)
                 .height(600);
 
-            d3.select("#venn")
+            const selection = d3.select("#venn")
                 .datum(data)
                 .call(chart);
 
-            // Adicionar tooltips
-            d3.selectAll("#venn .venn-circle path")
-                .style("fill-opacity", 0.6);
+            // Aplicar cores
+            const colorScale = d3.scaleOrdinal()
+                .domain(data.filter(d => d.sets.length === 1).map(d => d.sets[0]))
+                .range(colors);
 
-            d3.selectAll("#venn text")
+            selection.selectAll("path")
+                .style("fill", d => {
+                    if (d.sets.length === 1) {
+                        return colorScale(d.sets[0]);
+                    }
+                    return colorScale(d.sets[0]);
+                })
+                .style("fill-opacity", 0.6)
+                .style("stroke", "white")
+                .style("stroke-width", 3);
+
+            selection.selectAll("text")
                 .style("fill", "white")
                 .style("font-size", "16px")
-                .style("font-weight", "bold");
+                .style("font-weight", "bold")
+                .style("text-shadow", "2px 2px 4px rgba(0,0,0,0.7)");
+
+            // Hover effects
+            selection.selectAll("g")
+                .on("mouseover", function() {
+                    d3.select(this).select("path")
+                        .transition()
+                        .duration(200)
+                        .style("fill-opacity", 0.8);
+                })
+                .on("mouseout", function() {
+                    d3.select(this).select("path")
+                        .transition()
+                        .duration(200)
+                        .style("fill-opacity", 0.6);
+                });
         }
 
         // Mostrar estatísticas
-        function mostrarEstatisticas(metadata) {
+        function mostrarEstatisticas(data) {
             const statsDiv = document.getElementById('stats');
+            statsDiv.style.display = 'grid';
             
-            if (!metadata.totals) {
-                statsDiv.innerHTML = `
-                    <div class="stat-card">
-                        <div class="stat-label">Modo</div>
-                        <div class="stat-value">${metadata.mode || 'Real'}</div>
+            let html = '';
+            data.forEach(item => {
+                const label = item.sets.join(' ∩ ');
+                html += `
+                    <div class="stat-item">
+                        <div class="stat-label">${label}</div>
+                        <div class="stat-value">${item.size.toLocaleString('pt-BR')}</div>
                     </div>
                 `;
+            });
+            
+            statsDiv.innerHTML = html;
+        }
+
+        // Carregar exemplos
+        function carregarExemplo(tipo) {
+            const exemplos = {
+                marketing: {
+                    nameA: 'Email Marketing',
+                    sizeA: 5000,
+                    colorA: '#FF6B6B',
+                    nameB: 'Social Media',
+                    sizeB: 8000,
+                    colorB: '#4ECDC4',
+                    nameC: 'Anúncios Pagos',
+                    sizeC: 3000,
+                    colorC: '#45B7D1',
+                    intersectionAB: 1500,
+                    intersectionAC: 800,
+                    intersectionBC: 1000,
+                    intersectionABC: 400
+                },
+                produtos: {
+                    nameA: 'Eletrônicos',
+                    sizeA: 450,
+                    colorA: '#9B59B6',
+                    nameB: 'Casa & Decoração',
+                    sizeB: 620,
+                    colorB: '#3498DB',
+                    nameC: 'Moda',
+                    sizeC: 780,
+                    colorC: '#E74C3C',
+                    intersectionAB: 120,
+                    intersectionAC: 90,
+                    intersectionBC: 150,
+                    intersectionABC: 45
+                },
+                clientes: {
+                    nameA: 'Premium',
+                    sizeA: 250,
+                    colorA: '#F39C12',
+                    nameB: 'Regular',
+                    sizeB: 1500,
+                    colorB: '#2ECC71',
+                    nameC: 'Ocasional',
+                    sizeC: 3000,
+                    colorC: '#95A5A6',
+                    intersectionAB: 80,
+                    intersectionAC: 30,
+                    intersectionBC: 200,
+                    intersectionABC: 15
+                },
+                habilidades: {
+                    nameA: 'Frontend',
+                    sizeA: 25,
+                    colorA: '#E67E22',
+                    nameB: 'Backend',
+                    sizeB: 30,
+                    colorB: '#16A085',
+                    nameC: 'DevOps',
+                    sizeC: 15,
+                    colorC: '#2C3E50',
+                    intersectionAB: 8,
+                    intersectionAC: 5,
+                    intersectionBC: 6,
+                    intersectionABC: 3
+                },
+                canais: {
+                    nameA: 'Loja Física',
+                    sizeA: 12000,
+                    colorA: '#E74C3C',
+                    nameB: 'E-commerce',
+                    sizeB: 18000,
+                    colorB: '#3498DB',
+                    nameC: 'App Mobile',
+                    sizeC: 8000,
+                    colorC: '#9B59B6',
+                    intersectionAB: 4000,
+                    intersectionAC: 2000,
+                    intersectionBC: 3000,
+                    intersectionABC: 1000
+                }
+            };
+
+            const exemplo = exemplos[tipo];
+            if (exemplo) {
+                Object.keys(exemplo).forEach(key => {
+                    const el = document.getElementById(key);
+                    if (el) el.value = exemplo[key];
+                });
+                
+                // Atualizar preview de cores
+                ['A', 'B', 'C'].forEach(set => {
+                    document.getElementById(`color${set}-hex`).textContent = exemplo[`color${set}`];
+                });
+
+                switchTab('manual');
+                document.querySelector('.tab').click();
+                
+                // Gerar automaticamente
+                setTimeout(gerarDiagrama, 300);
+            }
+        }
+
+        // Limpar formulário
+        function limparFormulario() {
+            document.getElementById('nameA').value = '';
+            document.getElementById('nameB').value = '';
+            document.getElementById('nameC').value = '';
+            document.getElementById('sizeA').value = '';
+            document.getElementById('sizeB').value = '';
+            document.getElementById('sizeC').value = '';
+            document.getElementById('intersectionAB').value = '';
+            document.getElementById('intersectionAC').value = '';
+            document.getElementById('intersectionBC').value = '';
+            document.getElementById('intersectionABC').value = '';
+            
+            document.getElementById('venn-container').innerHTML = `
+                <div class="placeholder">
+                    <svg viewBox="0 0 200 200">
+                        <circle cx="70" cy="100" r="60" fill="#667eea" opacity="0.3"/>
+                        <circle cx="130" cy="100" r="60" fill="#764ba2" opacity="0.3"/>
+                    </svg>
+                    <p>Preencha os dados ao lado e clique em "Gerar Diagrama"</p>
+                </div>
+            `;
+            
+            document.getElementById('stats').style.display = 'none';
+        }
+
+        // Exportar SVG
+        function exportarSVG() {
+            const svgElement = document.querySelector('#venn svg');
+            if (!svgElement) {
+                alert('Gere um diagrama primeiro!');
                 return;
             }
 
-            statsDiv.innerHTML = `
-                <div class="stat-card">
-                    <div class="stat-label">📱 Mobile</div>
-                    <div class="stat-value">${metadata.totals.mobile}</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">🌐 Web</div>
-                    <div class="stat-value">${metadata.totals.web}</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">📧 Newsletter</div>
-                    <div class="stat-value">${metadata.totals.newsletter}</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">🕒 Atualizado</div>
-                    <div class="stat-value" style="font-size: 14px;">
-                        ${new Date(metadata.timestamp).toLocaleString('pt-BR')}
-                    </div>
-                </div>
-            `;
+            const serializer = new XMLSerializer();
+            const svgString = serializer.serializeToString(svgElement);
+            const blob = new Blob([svgString], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'venn-diagram.svg';
+            a.click();
+            
+            URL.revokeObjectURL(url);
         }
 
-        // Funções auxiliares
-        function mostrarLoading(show) {
-            document.getElementById('loading').style.display = show ? 'block' : 'none';
-            document.querySelectorAll('button').forEach(btn => btn.disabled = show);
+        // Exportar PNG
+        function exportarPNG() {
+            const svgElement = document.querySelector('#venn svg');
+            if (!svgElement) {
+                alert('Gere um diagrama primeiro!');
+                return;
+            }
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const svgData = new XMLSerializer().serializeToString(svgElement);
+            
+            const img = new Image();
+            const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(svgBlob);
+            
+            img.onload = function() {
+                canvas.width = img.width * 2;
+                canvas.height = img.height * 2;
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'venn-diagram.png';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                });
+                
+                URL.revokeObjectURL(url);
+            };
+            
+            img.src = url;
         }
 
-        function mostrarErro(mensagem) {
-            const errorDiv = document.getElementById('error');
-            errorDiv.textContent = mensagem;
-            errorDiv.style.display = 'block';
-        }
-
-        function limparErro() {
-            document.getElementById('error').style.display = 'none';
-        }
-
-        // Carregar exemplo ao iniciar
-        window.onload = () => carregarMock();
+        // Carregar exemplo inicial
+        window.addEventListener('load', () => {
+            carregarExemplo('marketing');
+        });
     </script>
 </body>
 </html>
