@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Venn Diagram</title>
+    <title>Martech - Diagrama de Venn</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/venn.js@0.2.20/build/venn.min.js"></script>
     <style>
@@ -227,6 +227,22 @@
             font-size: 15px;
             margin-bottom: 15px;
         }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #dddddd;
+            font-size: 14px;
+        }
+        .footer .heart {
+            color: #fc4707;
+            font-size: 18px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
     </style>
 </head>
 <body>
@@ -236,7 +252,7 @@
                 <img src="https://i.imgur.com/6gGwuFn.png" alt="Logo" class="logo" onerror="this.style.display='none'">
                 <h1>Gerador de Venn Diagram</h1>
             </div>
-            <p>Crie diagramas personalizados com seus próprios dados</p>
+            <p>Martequinho cria seus diagramas personalizados com seus próprios dados!!!</p>
         </div>
 
         <div class="content">
@@ -250,11 +266,11 @@
                 <div class="conjunto-card">
                     <div class="form-group">
                         <label>Nome do Conjunto A:</label>
-                        <input type="text" id="nameA" value="Clientes Mobile" placeholder="Ex: Clientes Mobile">
+                        <input type="text" id="nameA" value="" placeholder="Ex: Topo">
                     </div>
                     <div class="form-group">
                         <label>Tamanho do Conjunto A:</label>
-                        <input type="number" id="sizeA" value="150" min="0" placeholder="Ex: 150">
+                        <input type="number" id="sizeA" value="100" min="0" placeholder="Ex: 150">
                     </div>
                     <div class="form-group">
                         <label>Cor do Conjunto A:</label>
@@ -268,7 +284,7 @@
                 <div class="conjunto-card">
                     <div class="form-group">
                         <label>Nome do Conjunto B:</label>
-                        <input type="text" id="nameB" value="Clientes Web" placeholder="Ex: Clientes Web">
+                        <input type="text" id="nameB" value="" placeholder="Ex: Meio">
                     </div>
                     <div class="form-group">
                         <label>Tamanho do Conjunto B:</label>
@@ -286,11 +302,11 @@
                 <div class="conjunto-card">
                     <div class="form-group">
                         <label>Nome do Conjunto C (opcional):</label>
-                        <input type="text" id="nameC" value="Newsletter" placeholder="Ex: Newsletter">
+                        <input type="text" id="nameC" value="" placeholder="Ex: Fundo">
                     </div>
                     <div class="form-group">
                         <label>Tamanho do Conjunto C:</label>
-                        <input type="number" id="sizeC" value="100" min="0" placeholder="Ex: 100 (ou 0 para desabilitar)">
+                        <input type="number" id="sizeC" value="300" min="0" placeholder="Ex: 100 (ou 0 para desabilitar)">
                     </div>
                     <div class="form-group">
                         <label>Cor do Conjunto C:</label>
@@ -346,6 +362,12 @@
                 <button onclick="exportarSVG()" style="margin-top: 20px;">💾 Exportar como SVG</button>
                 <button onclick="exportarPNG()" style="margin-top: 10px;" class="btn-secondary">📸 Exportar como PNG</button>
             </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p>Criado com <span class="heart">🧡</span> pelo time de martech</p>
+            <p style="margin-top: 5px;">Qualquer problema ou sugestão, acionar <strong style="color: #fc4707;">vmelo@cadastra.com</strong></p>
         </div>
     </div>
 
@@ -403,7 +425,7 @@
             mostrarEstatisticas(data);
         }
 
-        // Renderizar Venn Diagram
+        // Renderizar Venn Diagram COM VALORES CORRETOS
         function renderizarVenn(data, colors = ['#fc4707', '#ff8533', '#ffaa66']) {
             console.log('📊 Iniciando renderização...');
             
@@ -427,6 +449,7 @@
                     .domain(data.filter(d => d.sets.length === 1).map(d => d.sets[0]))
                     .range(colors);
 
+                // Estilizar paths
                 svg.selectAll("path")
                     .style("fill", d => {
                         if (d.sets.length === 1) {
@@ -438,12 +461,89 @@
                     .style("stroke", "#fc4707")
                     .style("stroke-width", 3);
 
-                svg.selectAll("text")
-                    .style("fill", "#dddddd")
-                    .style("font-size", "18px")
-                    .style("font-weight", "bold")
-                    .style("text-shadow", "2px 2px 6px rgba(0,0,0,0.9)");
+                // ===== REMOVER TEXTOS PADRÃO E ADICIONAR CUSTOMIZADOS =====
+                svg.selectAll("text").remove();
 
+                // Função para calcular valor exclusivo
+                function calcularExclusivo(nomeConjunto, data) {
+                    const conjunto = data.find(d => d.sets.length === 1 && d.sets[0] === nomeConjunto);
+                    if (!conjunto) return 0;
+                    
+                    let total = conjunto.size;
+                    
+                    // Subtrair interseções
+                    data.forEach(item => {
+                        if (item.sets.length > 1 && item.sets.includes(nomeConjunto)) {
+                            total -= item.size;
+                        }
+                    });
+                    
+                    return Math.max(0, total);
+                }
+
+                // Adicionar textos para cada área
+                svg.selectAll("g").each(function(d) {
+                    const g = d3.select(this);
+                    
+                    // Pegar posição calculada pelo venn.js
+                    const bbox = this.querySelector('path').getBBox();
+                    const centerX = bbox.x + bbox.width / 2;
+                    const centerY = bbox.y + bbox.height / 2;
+
+                    if (d.sets.length === 1) {
+                        // CONJUNTO ÚNICO
+                        const nomeConjunto = d.sets[0];
+                        const valorExclusivo = calcularExclusivo(nomeConjunto, data);
+                        
+                        // Nome
+                        g.append("text")
+                            .attr("x", centerX)
+                            .attr("y", centerY - 12)
+                            .attr("text-anchor", "middle")
+                            .style("fill", "#ffffff")
+                            .style("font-size", "15px")
+                            .style("font-weight", "600")
+                            .style("text-shadow", "2px 2px 6px rgba(0,0,0,0.9)")
+                            .text(d.label || nomeConjunto);
+                        
+                        // Valor exclusivo
+                        g.append("text")
+                            .attr("x", centerX)
+                            .attr("y", centerY + 12)
+                            .attr("text-anchor", "middle")
+                            .style("fill", "#dddddd")
+                            .style("font-size", "28px")
+                            .style("font-weight", "bold")
+                            .style("text-shadow", "2px 2px 6px rgba(0,0,0,0.9)")
+                            .text(valorExclusivo.toLocaleString('pt-BR'));
+
+                    } else if (d.sets.length === 2) {
+                        // INTERSEÇÃO DE 2
+                        g.append("text")
+                            .attr("x", centerX)
+                            .attr("y", centerY + 8)
+                            .attr("text-anchor", "middle")
+                            .style("fill", "#ffffff")
+                            .style("font-size", "24px")
+                            .style("font-weight", "bold")
+                            .style("text-shadow", "2px 2px 6px rgba(0,0,0,0.9)")
+                            .text(d.size.toLocaleString('pt-BR'));
+
+                    } else if (d.sets.length === 3) {
+                        // INTERSEÇÃO DE 3 (centro)
+                        g.append("text")
+                            .attr("x", centerX)
+                            .attr("y", centerY + 8)
+                            .attr("text-anchor", "middle")
+                            .style("fill", "#ffffff")
+                            .style("font-size", "22px")
+                            .style("font-weight", "bold")
+                            .style("text-shadow", "2px 2px 6px rgba(0,0,0,0.9)")
+                            .text(d.size.toLocaleString('pt-BR'));
+                    }
+                });
+
+                // Hover effects
                 svg.selectAll("g")
                     .on("mouseover", function() {
                         d3.select(this).select("path")
