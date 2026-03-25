@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador - Diagrama de Venn</title>
-    <!-- Favicon (logo na aba do navegador) -->
+    <title>Gerador de Venn Diagram</title>
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://i.imgur.com/6gGwuFn.png">
     <link rel="shortcut icon" type="image/png" href="https://i.imgur.com/6gGwuFn.png">
     <link rel="apple-touch-icon" href="https://i.imgur.com/6gGwuFn.png">
@@ -119,6 +119,14 @@
             margin-bottom: 15px;
             border-left: 4px solid #fc4707;
         }
+        .conjunto-card .card-title {
+            color: #fc4707;
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(252, 71, 7, 0.3);
+        }
         button {
             width: 100%;
             background: #fc4707;
@@ -201,7 +209,6 @@
         .color-picker span {
             color: #dddddd;
         }
-        /* SLIDER DE TRANSPARÊNCIA */
         .opacity-slider {
             margin-top: 10px;
         }
@@ -274,10 +281,12 @@
             margin: 20px 0;
             border: 1px solid #fc4707;
         }
-        .intersections-box label:first-child {
+        .intersections-box .box-title {
             color: #fc4707;
             font-size: 15px;
+            font-weight: 700;
             margin-bottom: 15px;
+            display: block;
         }
         .footer {
             text-align: center;
@@ -307,35 +316,42 @@
         <div class="header">
             <div class="header-top">
                 <img src="https://i.imgur.com/6gGwuFn.png" alt="Logo" class="logo" onerror="this.style.display='none'">
-                <h1>Gerador - Diagrama de Venn</h1>
+                <h1>Gerador de Venn Diagram</h1>
             </div>
             <p>Martequinho cria o diagrama pra você!</p>
         </div>
+
         <!-- CONTEÚDO PRINCIPAL -->
         <div class="content">
             <!-- PAINEL ESQUERDO: FORMULÁRIO -->
             <div class="panel">
                 <div class="info-box">
                     <strong>💡 Como usar:</strong>
-                    Preencha os nomes e tamanhos de cada conjunto. Defina as interseções e ajuste a transparência de cada cor.
+                    Digite os valores EXATOS que deseja ver em cada área do diagrama. Os números não são calculados automaticamente.
                 </div>
-                <!-- CONJUNTO A -->
+
+                <!-- ÁREAS EXCLUSIVAS -->
                 <div class="conjunto-card">
+                    <div class="card-title">📊 Áreas Exclusivas (somente em um conjunto)</div>
+                    
+                    <div class="form-group">
+                        <label>Somente A:</label>
+                        <input type="number" id="valueOnlyA" value="" min="0" placeholder="Valor do Conjunto A">
+                    </div>
+
                     <div class="form-group">
                         <label>Nome do Conjunto A:</label>
-                        <input type="text" id="nameA" value="" placeholder="Ex: Clientes Mobile">
+                        <input type="text" id="nameA" value="" placeholder="Ex: Topo">
                     </div>
+
                     <div class="form-group">
-                        <label>Tamanho do Conjunto A:</label>
-                        <input type="number" id="sizeA" value="150" min="0" placeholder="Ex: 150">
-                    </div>
-                    <div class="form-group">
-                        <label>Cor do Conjunto A:</label>
+                        <label>Cor A:</label>
                         <div class="color-picker">
                             <input type="color" id="colorA" value="#fc4707">
                             <span id="colorA-hex">#fc4707</span>
                         </div>
                     </div>
+
                     <div class="form-group opacity-slider">
                         <label>Transparência A:</label>
                         <div class="opacity-slider-container">
@@ -345,23 +361,26 @@
                         </div>
                     </div>
                 </div>
-                <!-- CONJUNTO B -->
+
                 <div class="conjunto-card">
                     <div class="form-group">
+                        <label>Somente B:</label>
+                        <input type="number" id="valueOnlyB" value="" min="0" placeholder="Valor do Conjunto B">
+                    </div>
+
+                    <div class="form-group">
                         <label>Nome do Conjunto B:</label>
-                        <input type="text" id="nameB" value="" placeholder="Ex: Clientes Web">
+                        <input type="text" id="nameB" value="" placeholder="Ex: Meio">
                     </div>
+
                     <div class="form-group">
-                        <label>Tamanho do Conjunto B:</label>
-                        <input type="number" id="sizeB" value="200" min="0" placeholder="Ex: 200">
-                    </div>
-                    <div class="form-group">
-                        <label>Cor do Conjunto B:</label>
+                        <label>Cor B:</label>
                         <div class="color-picker">
                             <input type="color" id="colorB" value="#ff8533">
                             <span id="colorB-hex">#ff8533</span>
                         </div>
                     </div>
+
                     <div class="form-group opacity-slider">
                         <label>Transparência B:</label>
                         <div class="opacity-slider-container">
@@ -371,23 +390,26 @@
                         </div>
                     </div>
                 </div>
-                <!-- CONJUNTO C -->
+
                 <div class="conjunto-card">
                     <div class="form-group">
-                        <label>Nome do Conjunto C (opcional):</label>
-                        <input type="text" id="nameC" value="" placeholder="Ex: Newsletter">
+                        <label>Somente C:</label>
+                        <input type="number" id="valueOnlyC" value="" min="0" placeholder="Deixe vazio para duas intersecções">
                     </div>
+
                     <div class="form-group">
-                        <label>Tamanho do Conjunto C:</label>
-                        <input type="number" id="sizeC" value="100" min="0" placeholder="Ex: 100 (ou 0 para desabilitar)">
+                        <label>Nome do Conjunto C:</label>
+                        <input type="text" id="nameC" value="" placeholder="Ex: Fundo">
                     </div>
+
                     <div class="form-group">
-                        <label>Cor do Conjunto C:</label>
+                        <label>Cor C:</label>
                         <div class="color-picker">
                             <input type="color" id="colorC" value="#ffaa66">
                             <span id="colorC-hex">#ffaa66</span>
                         </div>
                     </div>
+
                     <div class="form-group opacity-slider">
                         <label>Transparência C:</label>
                         <div class="opacity-slider-container">
@@ -397,32 +419,40 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- INTERSEÇÕES -->
                 <div class="intersections-box">
-                    <label>⚙️ Interseções:</label>
+                    <span class="box-title">⚙️ Interseções (áreas compartilhadas)</span>
+                    
                     <div class="form-group">
-                        <label>Interseção A ∩ B:</label>
-                        <input type="number" id="intersectionAB" value="50" min="0" placeholder="Elementos em A e B">
+                        <label>A ∩ B (somente A e B):</label>
+                        <input type="number" id="valueAB" value="" min="0" placeholder="">
                     </div>
+
                     <div class="form-group">
-                        <label>Interseção A ∩ C:</label>
-                        <input type="number" id="intersectionAC" value="30" min="0" placeholder="Elementos em A e C">
+                        <label>A ∩ C (somente A e C):</label>
+                        <input type="number" id="valueAC" value="" min="0" placeholder="">
                     </div>
+
                     <div class="form-group">
-                        <label>Interseção B ∩ C:</label>
-                        <input type="number" id="intersectionBC" value="40" min="0" placeholder="Elementos em B e C">
+                        <label>B ∩ C (somente B e C):</label>
+                        <input type="number" id="valueBC" value="" min="0" placeholder="">
                     </div>
+
                     <div class="form-group">
-                        <label>Interseção A ∩ B ∩ C:</label>
-                        <input type="number" id="intersectionABC" value="20" min="0" placeholder="Elementos nos três">
+                        <label>A ∩ B ∩ C (centro - nos três):</label>
+                        <input type="number" id="valueABC" value="" min="0" placeholder="">
                     </div>
                 </div>
-                <!-- BOTÕES DE AÇÃO -->
+
+                <!-- BOTÕES -->
                 <button onclick="gerarDiagrama()">🎨 Gerar Diagrama</button>
                 <button class="btn-secondary" onclick="limparFormulario()">🔄 Limpar Tudo</button>
+
                 <!-- ESTATÍSTICAS -->
                 <div id="stats" class="stats-grid" style="display: none; margin-top: 20px;"></div>
             </div>
+
             <!-- PAINEL DIREITO: VISUALIZAÇÃO -->
             <div class="panel">
                 <div id="venn-container">
@@ -438,12 +468,14 @@
                 <button onclick="exportarPNG()" style="margin-top: 10px;" class="btn-secondary">📸 Exportar como PNG</button>
             </div>
         </div>
+
         <!-- FOOTER -->
         <div class="footer">
             <p>Criado com <span class="heart">🧡</span> pelo time de martech</p>
             <p style="margin-top: 5px;">Qualquer problema ou sugestão, acionar <strong>vmelo@cadastra.com</strong></p>
         </div>
     </div>
+
     <script>
         // ===================================================
         // ATUALIZAR PREVIEW DE COR
@@ -454,66 +486,105 @@
                 document.getElementById(`color${set}-hex`).textContent = e.target.value;
             });
         });
+
         // ===================================================
-        // GERAR DIAGRAMA
+        // GERAR DIAGRAMA COM VALORES DIRETOS
         // ===================================================
         function gerarDiagrama() {
-            console.log('🎨 Gerando diagrama...');
+            console.log('🎨 Gerando diagrama com valores diretos...');
+            
+            // Coletar nomes
             const nameA = document.getElementById('nameA').value || 'A';
             const nameB = document.getElementById('nameB').value || 'B';
             const nameC = document.getElementById('nameC').value || 'C';
-            const sizeA = parseInt(document.getElementById('sizeA').value) || 0;
-            const sizeB = parseInt(document.getElementById('sizeB').value) || 0;
-            const sizeC = parseInt(document.getElementById('sizeC').value) || 0;
-            const intersectionAB = parseInt(document.getElementById('intersectionAB').value) || 0;
-            const intersectionAC = parseInt(document.getElementById('intersectionAC').value) || 0;
-            const intersectionBC = parseInt(document.getElementById('intersectionBC').value) || 0;
-            const intersectionABC = parseInt(document.getElementById('intersectionABC').value) || 0;
+            
+            // Coletar valores DIRETOS (sem cálculos)
+            const valueOnlyA = parseInt(document.getElementById('valueOnlyA').value) || 0;
+            const valueOnlyB = parseInt(document.getElementById('valueOnlyB').value) || 0;
+            const valueOnlyC = parseInt(document.getElementById('valueOnlyC').value) || 0;
+            const valueAB = parseInt(document.getElementById('valueAB').value) || 0;
+            const valueAC = parseInt(document.getElementById('valueAC').value) || 0;
+            const valueBC = parseInt(document.getElementById('valueBC').value) || 0;
+            const valueABC = parseInt(document.getElementById('valueABC').value) || 0;
+            
+            // Cores e opacidades
             const colorA = document.getElementById('colorA').value;
             const colorB = document.getElementById('colorB').value;
             const colorC = document.getElementById('colorC').value;
-            // Obter valores de opacidade (de 0-100 para 0-1)
             const opacityA = parseInt(document.getElementById('opacityA').value) / 100;
             const opacityB = parseInt(document.getElementById('opacityB').value) / 100;
             const opacityC = parseInt(document.getElementById('opacityC').value) / 100;
+            
+            // Calcular tamanhos TOTAIS para o venn.js
+            // (venn.js precisa do tamanho total para calcular posições)
+            const totalA = valueOnlyA + valueAB + valueAC + valueABC;
+            const totalB = valueOnlyB + valueAB + valueBC + valueABC;
+            const totalC = valueOnlyC + valueAC + valueBC + valueABC;
+            
+            // Preparar dados no formato do venn.js
             let data;
-            if (sizeC > 0) {
+            
+            if (valueOnlyC > 0 || valueAC > 0 || valueBC > 0 || valueABC > 0) {
+                // 3 conjuntos
                 data = [
-                    { sets: [nameA], size: sizeA, label: nameA },
-                    { sets: [nameB], size: sizeB, label: nameB },
-                    { sets: [nameC], size: sizeC, label: nameC },
-                    { sets: [nameA, nameB], size: intersectionAB },
-                    { sets: [nameA, nameC], size: intersectionAC },
-                    { sets: [nameB, nameC], size: intersectionBC },
-                    { sets: [nameA, nameB, nameC], size: intersectionABC }
+                    { sets: [nameA], size: totalA, label: nameA },
+                    { sets: [nameB], size: totalB, label: nameB },
+                    { sets: [nameC], size: totalC, label: nameC },
+                    { sets: [nameA, nameB], size: valueAB + valueABC },
+                    { sets: [nameA, nameC], size: valueAC + valueABC },
+                    { sets: [nameB, nameC], size: valueBC + valueABC },
+                    { sets: [nameA, nameB, nameC], size: valueABC }
                 ];
             } else {
+                // 2 conjuntos
                 data = [
-                    { sets: [nameA], size: sizeA, label: nameA },
-                    { sets: [nameB], size: sizeB, label: nameB },
-                    { sets: [nameA, nameB], size: intersectionAB }
+                    { sets: [nameA], size: totalA, label: nameA },
+                    { sets: [nameB], size: totalB, label: nameB },
+                    { sets: [nameA, nameB], size: valueAB }
                 ];
             }
-            renderizarVenn(data, [colorA, colorB, colorC], [opacityA, opacityB, opacityC]);
-            mostrarEstatisticas(data);
+            
+            // Objeto com valores REAIS para exibição
+            const valoresReais = {
+                [nameA]: valueOnlyA,
+                [nameB]: valueOnlyB,
+                [nameC]: valueOnlyC,
+                [`${nameA},${nameB}`]: valueAB,
+                [`${nameA},${nameC}`]: valueAC,
+                [`${nameB},${nameC}`]: valueBC,
+                [`${nameA},${nameB},${nameC}`]: valueABC
+            };
+            
+            console.log('Dados para venn.js:', data);
+            console.log('Valores reais para exibir:', valoresReais);
+            
+            renderizarVenn(data, valoresReais, [colorA, colorB, colorC], [opacityA, opacityB, opacityC]);
+            mostrarEstatisticas(valoresReais, [nameA, nameB, nameC]);
         }
+
         // ===================================================
-        // RENDERIZAR VENN COM TRANSPARÊNCIA E POSIÇÕES AJUSTADAS
+        // RENDERIZAR COM VALORES DIRETOS (SEM SUBTRAÇÕES)
         // ===================================================
-        function renderizarVenn(data, colors = ['#fc4707', '#ff8533', '#ffaa66'], opacities = [0.7, 0.7, 0.7]) {
-            console.log('📊 Iniciando renderização...');
+        function renderizarVenn(data, valoresReais, colors, opacities) {
+            console.log('📊 Renderizando com valores diretos...');
+            
             try {
                 const container = document.getElementById('venn-container');
                 container.innerHTML = '<div id="venn"></div>';
+                
                 if (typeof venn === 'undefined' || typeof venn.VennDiagram !== 'function') {
                     throw new Error('venn.VennDiagram não encontrado');
                 }
+                
                 const chart = venn.VennDiagram()
                     .width(900)
                     .height(650);
+                
                 const div = d3.select("#venn");
                 div.datum(data).call(chart);
+                
                 const svg = div.select("svg");
+                
                 // Mapeamento de cores e opacidades
                 const colorMap = {};
                 const opacityMap = {};
@@ -521,7 +592,8 @@
                     colorMap[d.sets[0]] = colors[i];
                     opacityMap[d.sets[0]] = opacities[i];
                 });
-                // Estilizar paths COM OPACIDADE PERSONALIZADA
+                
+                // Estilizar paths
                 svg.selectAll("path")
                     .style("fill", d => {
                         if (d.sets.length === 1) {
@@ -533,62 +605,58 @@
                         if (d.sets.length === 1) {
                             return opacityMap[d.sets[0]];
                         }
-                        // Para interseções, usar média das opacidades
                         const avgOpacity = d.sets.reduce((sum, set) => sum + (opacityMap[set] || 0.7), 0) / d.sets.length;
                         return avgOpacity;
                     })
                     .style("stroke", "#fc4707")
                     .style("stroke-width", 3);
-                // ===== REMOVER TEXTOS PADRÃO =====
+                
+                // Remover textos padrão
                 svg.selectAll("text").remove();
-                // ===== CALCULAR VALORES EXCLUSIVOS =====
-                function calcularExclusivo(nomeConjunto, data) {
-                    const conjunto = data.find(d => d.sets.length === 1 && d.sets[0] === nomeConjunto);
-                    if (!conjunto) return 0;
-                    let total = conjunto.size;
-                    data.forEach(item => {
-                        if (item.sets.length > 1 && item.sets.includes(nomeConjunto)) {
-                            total -= item.size;
-                        }
-                    });
-                    return Math.max(0, total);
-                }
-                // ===== CALCULAR TOTAIS PARA PORCENTAGEM =====
+                
+                // Calcular totais para porcentagem
                 const totais = {};
                 data.filter(d => d.sets.length === 1).forEach(d => {
                     totais[d.sets[0]] = d.size;
                 });
-                // ===== MAPEAR E ORDENAR ÁREAS =====
+                
+                // Adicionar textos com VALORES REAIS (não calculados)
                 const areas = [];
                 svg.selectAll("g").each(function(d) {
-                    areas.push({
-                        element: this,
-                        data: d,
-                        path: this.querySelector('path')
-                    });
+                    areas.push({ element: this, data: d, path: this.querySelector('path') });
                 });
+                
                 areas.sort((a, b) => a.data.sets.length - b.data.sets.length);
-                // ===== ADICIONAR TEXTOS COM POSIÇÕES AJUSTADAS =====
+                
                 areas.forEach(area => {
                     const d = area.data;
                     const g = d3.select(area.element);
                     const path = area.path;
+                    
                     if (!path) return;
+                    
                     const bbox = path.getBBox();
                     let centerX = bbox.x + bbox.width / 2;
                     let centerY = bbox.y + bbox.height / 2;
+                    
+                    // Obter valor REAL do objeto valoresReais
+                    const key = d.sets.sort().join(',');
+                    const valorReal = valoresReais[key] || valoresReais[d.sets.join(',')] || 0;
+                    
                     if (d.sets.length === 1) {
-                        // CONJUNTO ÚNICO - AJUSTAR POSIÇÃO PARA ÁREA EXCLUSIVA
+                        // CONJUNTO ÚNICO
                         const nomeConjunto = d.sets[0];
-                        const valorExclusivo = calcularExclusivo(nomeConjunto, data);
                         const totalConjunto = totais[nomeConjunto];
-                        const porcentagem = totalConjunto > 0 ? (valorExclusivo / totalConjunto * 100) : 0;
-                        // Calcular offset maior para afastar de interseções
+                        const porcentagem = totalConjunto > 0 ? (valorReal / totalConjunto * 100) : 0;
+                        
+                        // Ajustar posição
                         const svgCenter = { x: 450, y: 325 };
                         const angle = Math.atan2(centerY - svgCenter.y, centerX - svgCenter.x);
-                        const offset = Math.min(bbox.width, bbox.height) * 0.35;  // Aumentado de 0.30 para 0.35
+                        const offset = Math.min(bbox.width, bbox.height) * 0.35;
+                        
                         centerX += Math.cos(angle) * offset;
                         centerY += Math.sin(angle) * offset;
+                        
                         // Nome
                         g.append("text")
                             .attr("x", centerX)
@@ -599,7 +667,8 @@
                             .style("font-weight", "700")
                             .style("text-shadow", "2px 2px 6px rgba(0,0,0,0.95)")
                             .text(d.label || nomeConjunto);
-                        // Valor
+                        
+                        // Valor DIRETO
                         g.append("text")
                             .attr("x", centerX)
                             .attr("y", centerY + 5)
@@ -608,7 +677,8 @@
                             .style("font-size", "30px")
                             .style("font-weight", "bold")
                             .style("text-shadow", "2px 2px 8px rgba(0,0,0,0.95)")
-                            .text(valorExclusivo.toLocaleString('pt-BR'));
+                            .text(valorReal.toLocaleString('pt-BR'));
+                        
                         // Porcentagem
                         g.append("text")
                             .attr("x", centerX)
@@ -620,23 +690,18 @@
                             .style("opacity", "0.85")
                             .style("text-shadow", "1px 1px 4px rgba(0,0,0,0.9)")
                             .text(`(${porcentagem.toFixed(1)}%)`);
-                    } else if (d.sets.length === 2) {
-                        // INTERSEÇÃO DE 2 - AFASTAR DO CENTRO
-                        const valor = d.size - (data.find(item =>
-                            item.sets.length === 3 &&
-                            d.sets.every(s => item.sets.includes(s))
-                        )?.size || 0);
                         
+                    } else if (d.sets.length === 2) {
+                        // INTERSEÇÃO DE 2
                         const total1 = totais[d.sets[0]] || 1;
                         const total2 = totais[d.sets[1]] || 1;
-                        const porcentagem = ((valor / total1 * 100) + (valor / total2 * 100)) / 2;
+                        const porcentagem = ((valorReal / total1 * 100) + (valorReal / total2 * 100)) / 2;
                         
-                        // Identificar qual interseção é e ajustar posição
-                        // Se tiver 3 conjuntos, afastar do centro
+                        // Afastar do centro se houver 3 conjuntos
                         if (data.some(item => item.sets.length === 3)) {
                             const svgCenter = { x: 450, y: 325 };
                             const angle = Math.atan2(centerY - svgCenter.y, centerX - svgCenter.x);
-                            const offset = 25;  // Offset fixo para afastar do centro
+                            const offset = 30;
                             centerX += Math.cos(angle) * offset;
                             centerY += Math.sin(angle) * offset;
                         }
@@ -650,7 +715,7 @@
                             .style("font-size", "22px")
                             .style("font-weight", "bold")
                             .style("text-shadow", "2px 2px 8px rgba(0,0,0,0.95)")
-                            .text(Math.max(0, valor).toLocaleString('pt-BR'));
+                            .text(valorReal.toLocaleString('pt-BR'));
                         
                         // Porcentagem
                         g.append("text")
@@ -663,11 +728,13 @@
                             .style("opacity", "0.85")
                             .style("text-shadow", "1px 1px 4px rgba(0,0,0,0.9)")
                             .text(`(${porcentagem.toFixed(1)}%)`);
+                        
                     } else if (d.sets.length === 3) {
                         // CENTRO (3 CONJUNTOS)
                         const porcentagemMedia = d.sets.reduce((sum, set) => {
-                            return sum + (d.size / (totais[set] || 1) * 100);
+                            return sum + (valorReal / (totais[set] || 1) * 100);
                         }, 0) / d.sets.length;
+                        
                         // Valor
                         g.append("text")
                             .attr("x", centerX)
@@ -677,7 +744,8 @@
                             .style("font-size", "20px")
                             .style("font-weight", "bold")
                             .style("text-shadow", "2px 2px 8px rgba(0,0,0,0.95)")
-                            .text(d.size.toLocaleString('pt-BR'));
+                            .text(valorReal.toLocaleString('pt-BR'));
+                        
                         // Porcentagem
                         g.append("text")
                             .attr("x", centerX)
@@ -691,7 +759,8 @@
                             .text(`(${porcentagemMedia.toFixed(1)}%)`);
                     }
                 });
-                // ===== HOVER EFFECTS =====
+                
+                // Hover effects
                 svg.selectAll("g")
                     .on("mouseover", function(event, d) {
                         d3.select(this).select("path")
@@ -719,7 +788,9 @@
                             })
                             .style("stroke-width", 3);
                     });
-                console.log('✅ Diagrama renderizado com transparência personalizada!');
+                
+                console.log('✅ Diagrama gerado com valores diretos!');
+                
             } catch (error) {
                 console.error('❌ Erro:', error);
                 document.getElementById('venn-container').innerHTML = `
@@ -730,85 +801,89 @@
                 `;
             }
         }
+
         // ===================================================
-        // MOSTRAR ESTATÍSTICAS
+        // MOSTRAR ESTATÍSTICAS (VALORES DIRETOS)
         // ===================================================
-        function mostrarEstatisticas(data) {
+        function mostrarEstatisticas(valoresReais, nomes) {
             const statsDiv = document.getElementById('stats');
             statsDiv.style.display = 'grid';
-            let html = '<div style="grid-column: 1 / -1; margin-bottom: 10px;"><strong style="color: #fc4707; font-size: 15px;">📊 Estatísticas Detalhadas:</strong></div>';
-            data.filter(d => d.sets.length === 1).forEach(item => {
-                const exclusivo = calcularExclusivoGlobal(item.sets[0], data);
-                html += `
-                    <div class="stat-item">
-                        <div class="stat-label">Somente ${item.sets[0]}</div>
-                        <div class="stat-value">${exclusivo.toLocaleString('pt-BR')}</div>
-                    </div>
-                `;
-            });
-            data.filter(d => d.sets.length === 2).forEach(item => {
-                const label = item.sets.join(' ∩ ');
-                let valor = item.size;
-                const int3 = data.find(d =>
-                    d.sets.length === 3 &&
-                    item.sets.every(s => d.sets.includes(s))
-                );
-                if (int3) valor -= int3.size;
-                html += `
-                    <div class="stat-item">
-                        <div class="stat-label">${label}</div>
-                        <div class="stat-value">${Math.max(0, valor).toLocaleString('pt-BR')}</div>
-                    </div>
-                `;
-            });
-            const centro = data.find(d => d.sets.length === 3);
-            if (centro) {
-                html += `
-                    <div class="stat-item" style="grid-column: 1 / -1;">
-                        <div class="stat-label">${centro.sets.join(' ∩ ')}</div>
-                        <div class="stat-value">${centro.size.toLocaleString('pt-BR')}</div>
-                    </div>
-                `;
-            }
+            
+            let html = '<div style="grid-column: 1 / -1; margin-bottom: 10px;"><strong style="color: #fc4707; font-size: 15px;">📊 Resumo dos Valores:</strong></div>';
+            
+            // Valores exclusivos
+            html += `
+                <div class="stat-item">
+                    <div class="stat-label">Somente ${nomes[0]}</div>
+                    <div class="stat-value">${(valoresReais[nomes[0]] || 0).toLocaleString('pt-BR')}</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Somente ${nomes[1]}</div>
+                    <div class="stat-value">${(valoresReais[nomes[1]] || 0).toLocaleString('pt-BR')}</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Somente ${nomes[2]}</div>
+                    <div class="stat-value">${(valoresReais[nomes[2]] || 0).toLocaleString('pt-BR')}</div>
+                </div>
+            `;
+            
+            // Interseções de 2
+            html += `
+                <div class="stat-item">
+                    <div class="stat-label">${nomes[0]} ∩ ${nomes[1]}</div>
+                    <div class="stat-value">${(valoresReais[`${nomes[0]},${nomes[1]}`] || 0).toLocaleString('pt-BR')}</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">${nomes[0]} ∩ ${nomes[2]}</div>
+                    <div class="stat-value">${(valoresReais[`${nomes[0]},${nomes[2]}`] || 0).toLocaleString('pt-BR')}</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">${nomes[1]} ∩ ${nomes[2]}</div>
+                    <div class="stat-value">${(valoresReais[`${nomes[1]},${nomes[2]}`] || 0).toLocaleString('pt-BR')}</div>
+                </div>
+            `;
+            
+            // Centro
+            html += `
+                <div class="stat-item" style="grid-column: 1 / -1;">
+                    <div class="stat-label">${nomes[0]} ∩ ${nomes[1]} ∩ ${nomes[2]}</div>
+                    <div class="stat-value">${(valoresReais[`${nomes[0]},${nomes[1]},${nomes[2]}`] || 0).toLocaleString('pt-BR')}</div>
+                </div>
+            `;
+            
             statsDiv.innerHTML = html;
         }
-        function calcularExclusivoGlobal(nomeConjunto, data) {
-            const conjunto = data.find(d => d.sets.length === 1 && d.sets[0] === nomeConjunto);
-            if (!conjunto) return 0;
-            let total = conjunto.size;
-            data.forEach(item => {
-                if (item.sets.length > 1 && item.sets.includes(nomeConjunto)) {
-                    total -= item.size;
-                }
-            });
-            return Math.max(0, total);
-        }
+
         // ===================================================
         // LIMPAR FORMULÁRIO
         // ===================================================
         function limparFormulario() {
-            document.getElementById('nameA').value = '';
-            document.getElementById('nameB').value = '';
-            document.getElementById('nameC').value = '';
-            document.getElementById('sizeA').value = '100';
-            document.getElementById('sizeB').value = '100';
-            document.getElementById('sizeC').value = '0';
-            document.getElementById('intersectionAB').value = '30';
-            document.getElementById('intersectionAC').value = '0';
-            document.getElementById('intersectionBC').value = '0';
-            document.getElementById('intersectionABC').value = '0';
+            document.getElementById('nameA').value = 'A';
+            document.getElementById('nameB').value = 'B';
+            document.getElementById('nameC').value = 'C';
+            
+            document.getElementById('valueOnlyA').value = '1240';
+            document.getElementById('valueOnlyB').value = '2778';
+            document.getElementById('valueOnlyC').value = '34636';
+            document.getElementById('valueAB').value = '430';
+            document.getElementById('valueAC').value = '1414';
+            document.getElementById('valueBC').value = '4932';
+            document.getElementById('valueABC').value = '773';
+            
             document.getElementById('colorA').value = '#fc4707';
             document.getElementById('colorB').value = '#ff8533';
             document.getElementById('colorC').value = '#ffaa66';
             document.getElementById('colorA-hex').textContent = '#fc4707';
             document.getElementById('colorB-hex').textContent = '#ff8533';
             document.getElementById('colorC-hex').textContent = '#ffaa66';
+            
             document.getElementById('opacityA').value = '70';
             document.getElementById('opacityB').value = '70';
             document.getElementById('opacityC').value = '70';
             document.getElementById('opacityA-value').textContent = '70%';
             document.getElementById('opacityB-value').textContent = '70%';
             document.getElementById('opacityC-value').textContent = '70%';
+            
             document.getElementById('venn-container').innerHTML = `
                 <div class="placeholder">
                     <svg viewBox="0 0 200 200">
@@ -818,8 +893,10 @@
                     <p style="color: #dddddd;">Preencha os dados ao lado e clique em "Gerar Diagrama"</p>
                 </div>
             `;
+            
             document.getElementById('stats').style.display = 'none';
         }
+
         // ===================================================
         // EXPORTAR SVG
         // ===================================================
@@ -840,6 +917,7 @@
             URL.revokeObjectURL(url);
             alert('✅ SVG exportado com sucesso!');
         }
+
         // ===================================================
         // EXPORTAR PNG
         // ===================================================
@@ -874,8 +952,9 @@
             };
             img.src = url;
         }
+
         // ===================================================
-        // CARREGAR DIAGRAMA INICIAL
+        // CARREGAR DIAGRAMA COM EXEMPLO
         // ===================================================
         window.addEventListener('load', () => {
             console.log('✅ Página carregada');
